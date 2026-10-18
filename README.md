@@ -7,6 +7,7 @@ index.html          the whole page
 css/styles.css      all styles; design tokens at the top (:root)
 js/main.js          mobile menu, scroll fade-in, gallery lightbox
 js/hair.js          animated ASCII hair sweeping behind the hero title
+js/shapes.js        rotating ASCII versions of the Y2K shapes
 images/             gallery photos + social preview image (see images/README.md)
 assets/svg/         chrome shapes, sparkles, line illustrations, textures
 ```
@@ -74,6 +75,14 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Off-white on sage | 2.6 | ❌ avoid |
 | Off-white on taupe | 2.4 | ❌ avoid |
 | Electric blue as text (dark or light bg) | 3.6–3.9 | ❌ blue is used only as a fill, underline, or decoration |
+
+**Y2K shapes:** a library of 17 shapes (sparkles, 8-point stars, bursts, orbit rings, comets, shooting stars, a wire globe, swooshes, Saturn, a checker strip and more) is defined once as SVG `<symbol>`s inside `index.html`, ids `shape-...`. Place one anywhere with:
+
+```html
+<svg class="deco deco--chrome spin" style="--x:80%;--y:20%;--s:60px;" viewBox="0 0 100 100"><use href="#shape-orbit"/></svg>
+```
+
+`--x`/`--y` set the center point (as a % of the section) and `--s` the size. Use `deco--chrome` on dark sections and `deco--ink` on light ones. For motion add `spin`, `spin-slow`, `spin-rev`, `flip` (turns like a coin), `flip-slow`, `tw` (twinkle) or `drift`. Add `deco--wide` to hide a shape on phones. For an ASCII version use `<canvas class="deco ascii-shape" style="..." data-shape="star8" data-motion="spin|flip" data-tone="dark|light">`. `js/shapes.js` redraws it as characters every frame, so the shape turns while the letters stay upright.
 
 **Motion:** Fade-in on scroll, chrome sparkle twinkle, and hover lifts. All of it is disabled when the visitor's device has "reduce motion" turned on.
 

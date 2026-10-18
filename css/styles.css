@@ -205,6 +205,36 @@ a { color: inherit; }
 }
 .halftone > * { position: relative; }
 
+/* ---------- Y2K decorative shapes ----------
+   Positioned by --x/--y (center point, % of the section) and sized by --s.
+   Chrome on dark sections, ink on light ones. Spin uses the `rotate` property
+   and flip uses `transform`, so the two never fight. */
+.decos, .hero__chrome, .booking__chrome { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.section > .container { position: relative; z-index: 1; }
+.deco {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  translate: -50% -50%;
+  rotate: var(--r, 0deg);
+  pointer-events: none;
+}
+/* Own compositor layer: painted once (shadow included), then just turned each frame */
+.spin, .spin-slow, .spin-rev, .flip, .flip-slow, .tw, .drift { will-change: transform, rotate, scale; }
+.deco--chrome { fill: url(#chrome-grad); stroke: url(#chrome-grad); filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .55)); }
+.deco--ink { fill: var(--charcoal); stroke: var(--charcoal); opacity: .85; }
+.spin { animation: spin 36s linear infinite; }
+.spin-slow { animation: spin 70s linear infinite; }
+.spin-rev { animation: spin 50s linear infinite reverse; }
+.flip { animation: flip 9s linear infinite; }
+.flip-slow { animation: flip 18s linear infinite; }
+.tw { animation: twinkle 4.5s ease-in-out infinite; }
+.drift { animation: drift 9s ease-in-out infinite; }
+/* Busy edges crowd the text on phones: keep only the essentials there */
+@media (max-width: 767px) { .deco--wide { display: none; } }
+
 /* ---------- Dividers ---------- */
 .divider { height: 14px; }
 .divider--chrome {
@@ -508,9 +538,6 @@ a { color: inherit; }
   text-align: center;
 }
 .booking__chrome { position: absolute; inset: 0; pointer-events: none; }
-.sparkle--b1 { top: 14%; left: 10%; width: 54px; height: 54px; animation: twinkle 5s ease-in-out infinite; }
-.sparkle--b2 { top: 8%; right: 8%; width: 34px; height: 34px; animation: twinkle 4s ease-in-out 1s infinite; }
-.booking:hover .sparkle { transform: rotate(45deg) scale(1.1); }
 .booking__inner { position: relative; display: flex; flex-direction: column; align-items: center; }
 .booking__title {
   font-family: var(--font-display);
@@ -636,6 +663,15 @@ a { color: inherit; }
   0%, 100% { translate: 0 0; rotate: 0deg; }
   50% { translate: -14px 18px; rotate: 4deg; }
 }
+@keyframes spin { to { rotate: 360deg; } }
+@keyframes flip {
+  from { transform: perspective(500px) rotateY(0deg); }
+  to { transform: perspective(500px) rotateY(360deg); }
+}
+@keyframes drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(14px); }
+}
 @keyframes twinkle {
   0%, 100% { opacity: .9; scale: 1; }
   50% { opacity: .45; scale: .8; }
@@ -652,7 +688,7 @@ a { color: inherit; }
     transition: none !important;
   }
   .js .reveal { opacity: 1; transform: none; }
-  .hero:hover .chrome-shape, .booking:hover .sparkle, .hero:hover .sparkle { transform: none; }
+  .hero:hover .chrome-shape, .hero:hover .sparkle { transform: none; }
 }
 
 /* =========================================================
