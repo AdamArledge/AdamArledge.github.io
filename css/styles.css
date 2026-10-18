@@ -142,6 +142,7 @@ a { color: inherit; }
 .btn--ghost {
   color: var(--off-white);
   border: 4px solid var(--off-white);
+  background: rgba(20, 19, 17, .85); /* keeps the label clear of the ASCII hair behind it */
 }
 /* Ghost hover = checkerboard border. Two backgrounds: a solid fill clipped to the
    padding box keeps the label legible; the checker shows only through the border. */
@@ -203,6 +204,36 @@ a { color: inherit; }
   pointer-events: none;
 }
 .halftone > * { position: relative; }
+
+/* ---------- Y2K decorative shapes ----------
+   Positioned by --x/--y (center point, % of the section) and sized by --s.
+   Chrome on dark sections, ink on light ones. Spin uses the `rotate` property
+   and flip uses `transform`, so the two never fight. */
+.decos, .hero__chrome, .booking__chrome { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.section > .container { position: relative; z-index: 1; }
+.deco {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  width: var(--s);
+  height: var(--s);
+  translate: -50% -50%;
+  rotate: var(--r, 0deg);
+  pointer-events: none;
+}
+/* Own compositor layer: painted once (shadow included), then just turned each frame */
+.spin, .spin-slow, .spin-rev, .flip, .flip-slow, .tw, .drift { will-change: transform, rotate, scale; }
+.deco--chrome { fill: url(#chrome-grad); stroke: url(#chrome-grad); filter: drop-shadow(0 6px 14px rgba(0, 0, 0, .55)); }
+.deco--ink { fill: var(--charcoal); stroke: var(--charcoal); opacity: .85; }
+.spin { animation: spin 36s linear infinite; }
+.spin-slow { animation: spin 70s linear infinite; }
+.spin-rev { animation: spin 50s linear infinite reverse; }
+.flip { animation: flip 9s linear infinite; }
+.flip-slow { animation: flip 18s linear infinite; }
+.tw { animation: twinkle 4.5s ease-in-out infinite; }
+.drift { animation: drift 9s ease-in-out infinite; }
+/* Busy edges crowd the text on phones: keep only the essentials there */
+@media (max-width: 767px) { .deco--wide { display: none; } }
 
 /* ---------- Dividers ---------- */
 .divider { height: 14px; }
@@ -313,21 +344,18 @@ a { color: inherit; }
   filter: drop-shadow(0 12px 30px rgba(0, 0, 0, .6));
   transition: transform .8s var(--ease), filter .8s var(--ease);
 }
-.chrome-shape--blob {
-  width: min(85vw, 560px);
-  right: -40%;
-  top: 2%;
-  opacity: .35;
-  animation: float 14s ease-in-out infinite;
+/* ASCII hair sweep fills the hero, behind the text */
+.hero__ascii {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 .sparkle { width: 48px; height: 48px; }
 .sparkle--1 { top: 12%; left: 8%; width: 36px; height: 36px; animation: twinkle 4s ease-in-out infinite; }
-.sparkle--2 { top: 64%; right: 10%; width: 64px; height: 64px; animation: twinkle 5s ease-in-out .8s infinite; }
 .sparkle--3 { bottom: 10%; left: 18%; width: 26px; height: 26px; animation: twinkle 3.6s ease-in-out 1.6s infinite; }
-.sparkle--4 { top: 22%; right: 34%; width: 20px; height: 20px; animation: twinkle 4.4s ease-in-out .4s infinite; }
 
 /* Gentle hover on chrome: the hero is pointer-events:none, so react to hovering the section */
-.hero:hover .chrome-shape--blob { transform: rotate(-6deg) scale(1.03); filter: drop-shadow(0 16px 40px rgba(59, 91, 255, .35)); }
 .hero:hover .sparkle { transform: rotate(45deg) scale(1.1); }
 
 .hero__content { position: relative; z-index: 1; padding-block: 4rem; }
@@ -348,7 +376,7 @@ a { color: inherit; }
   letter-spacing: -.02em;
   max-width: 12ch;
   overflow-wrap: anywhere;
-  /* Dark offset edge so chrome letters stay legible where they cross the chrome blob */
+  /* Dark offset edge so chrome letters stay legible over the ASCII hair */
   filter: drop-shadow(3px 4px 0 rgba(20, 19, 17, .85));
 }
 .hero__tagline {
@@ -510,9 +538,6 @@ a { color: inherit; }
   text-align: center;
 }
 .booking__chrome { position: absolute; inset: 0; pointer-events: none; }
-.sparkle--b1 { top: 14%; left: 10%; width: 54px; height: 54px; animation: twinkle 5s ease-in-out infinite; }
-.sparkle--b2 { top: 8%; right: 8%; width: 34px; height: 34px; animation: twinkle 4s ease-in-out 1s infinite; }
-.booking:hover .sparkle { transform: rotate(45deg) scale(1.1); }
 .booking__inner { position: relative; display: flex; flex-direction: column; align-items: center; }
 .booking__title {
   font-family: var(--font-display);
@@ -638,6 +663,15 @@ a { color: inherit; }
   0%, 100% { translate: 0 0; rotate: 0deg; }
   50% { translate: -14px 18px; rotate: 4deg; }
 }
+@keyframes spin { to { rotate: 360deg; } }
+@keyframes flip {
+  from { transform: perspective(500px) rotateY(0deg); }
+  to { transform: perspective(500px) rotateY(360deg); }
+}
+@keyframes drift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(14px); }
+}
 @keyframes twinkle {
   0%, 100% { opacity: .9; scale: 1; }
   50% { opacity: .45; scale: .8; }
@@ -654,7 +688,7 @@ a { color: inherit; }
     transition: none !important;
   }
   .js .reveal { opacity: 1; transform: none; }
-  .hero:hover .chrome-shape, .booking:hover .sparkle, .hero:hover .sparkle { transform: none; }
+  .hero:hover .chrome-shape, .hero:hover .sparkle { transform: none; }
 }
 
 /* =========================================================
@@ -663,7 +697,6 @@ a { color: inherit; }
 @media (min-width: 768px) {
   :root { --gutter: 2rem; }
 
-  .chrome-shape--blob { width: 440px; right: -14%; top: auto; bottom: 6%; opacity: .7; }
 
   /* Rotated poster headings sit in a narrow left column */
   .about__grid,
@@ -731,6 +764,5 @@ a { color: inherit; }
   }
   .contact__grid { grid-template-columns: auto repeat(3, 1fr); }
   .contact__grid .section-title--vertical { grid-row: span 1; }
-  .chrome-shape--blob { width: 500px; right: 3%; top: 50%; bottom: auto; margin-top: -250px; opacity: .85; }
   .hero__title { max-width: 9ch; }
 }
