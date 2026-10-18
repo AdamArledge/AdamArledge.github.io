@@ -107,12 +107,11 @@
 
     <!-- ================= HERO ================= -->
     <section class="hero" id="top" aria-labelledby="hero-title">
+      <!-- Animated ASCII hair figure, drawn by js/hair.js -->
+      <canvas class="hero__ascii" aria-hidden="true"></canvas>
       <div class="hero__chrome" aria-hidden="true">
-        <img class="chrome-shape chrome-shape--blob" src="assets/svg/chrome-blob.svg" alt="" width="400" height="400">
         <svg class="chrome-shape sparkle sparkle--1" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
-        <svg class="chrome-shape sparkle sparkle--2" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
         <svg class="chrome-shape sparkle sparkle--3" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
-        <svg class="chrome-shape sparkle sparkle--4" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
       </div>
 
       <div class="hero__content container">
@@ -347,5 +346,6 @@
   </dialog>
 
   <script src="js/main.js" defer></script>
+  <script src="js/hair.js" defer></script>
 </body>
 </html>

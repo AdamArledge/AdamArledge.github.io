@@ -6,6 +6,7 @@ A single-page static site for a cosmetology business. Retro-futurist styling: Y2
 index.html          the whole page
 css/styles.css      all styles; design tokens at the top (:root)
 js/main.js          mobile menu, scroll fade-in, gallery lightbox
+js/hair.js          animated ASCII hair figure in the hero
 images/             gallery photos + social preview image (see images/README.md)
 assets/svg/         chrome shapes, sparkles, line illustrations, textures
 ```
@@ -74,4 +75,6 @@ python3 -m http.server 8000   # then open http://localhost:8000
 | Off-white on taupe | 2.4 | ❌ avoid |
 | Electric blue as text (dark or light bg) | 3.6–3.9 | ❌ blue is used only as a fill, underline, or decoration |
 
-**Motion:** Fade-in on scroll, slow chrome float/twinkle, and hover lifts. All of it is disabled when the visitor's device has "reduce motion" turned on.
+**Motion:** Fade-in on scroll, chrome sparkle twinkle, and hover lifts. All of it is disabled when the visitor's device has "reduce motion" turned on.
+
+**Hero ASCII hair (`js/hair.js`):** a bowed, featureless head in profile whose hair drifts as text characters on a `<canvas>`. Each strand is a chain of fixed-length segments bent sideways by a *curl-noise* flow field (a swirling, fluid-like motion) and pulled back toward its outward direction by a spring. Each segment's angle eases toward that target, so the motion stays smooth and strands never stretch. Characters follow each strand's direction (`- | / \`), with denser ones (`* # % @`) where strands overlap. It sits beside the title on wide screens and above it on phones and portrait tablets. It pauses when off-screen or in a background tab, runs at 20fps on phones, and shows a still frame with "reduce motion" on. To tune the look, edit the constants at the top of the file: `BEND` (curliness), `SPRING` (how radial), `MAX_TURN` (tightest curl), `EASE` (silkiness), and `PALETTES` (colors).
