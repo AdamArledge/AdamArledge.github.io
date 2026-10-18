@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- ============ SEO — replace every [BRACKETED] value ============ -->
+  <title>[BUSINESS NAME] | Hair Salon in [CITY, STATE]</title>
+  <meta name="description" content="[BUSINESS NAME] is a bold, retro-futurist hair salon in [CITY, STATE]. Cuts, color, and styling. Book online 24/7 through Vagaro.">
+  <meta name="theme-color" content="#141311">
+  <link rel="canonical" href="https://[USERNAME].github.io/">
+
+  <!-- Open Graph / social previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="[BUSINESS NAME] | Hair Salon in [CITY, STATE]">
+  <meta property="og:description" content="Cuts, color, and styling with a chrome-and-punk edge. Book online 24/7.">
+  <meta property="og:url" content="https://[USERNAME].github.io/">
+  <meta property="og:image" content="https://[USERNAME].github.io/images/og-image.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/svg/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts: Unbounded (display), DM Serif Display Italic (accent), DM Sans (body), Space Mono (prices/hours) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=DM+Serif+Display:ital@1&family=Space+Mono:wght@400;700&family=Unbounded:wght@600;800;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- LocalBusiness structured data (Google uses this for Maps/search cards) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "HairSalon",
+    "name": "[BUSINESS NAME]",
+    "description": "[TAGLINE]",
+    "url": "https://[USERNAME].github.io/",
+    "image": "https://[USERNAME].github.io/images/og-image.jpg",
+    "telephone": "[PHONE]",
+    "email": "[EMAIL]",
+    "priceRange": "$$",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "[STREET ADDRESS]",
+      "addressLocality": "[CITY]",
+      "addressRegion": "[STATE]",
+      "postalCode": "[ZIP]",
+      "addressCountry": "US"
+    },
+    "openingHoursSpecification": [
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Tuesday","Wednesday","Thursday","Friday"], "opens": "10:00", "closes": "19:00" },
+      { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "09:00", "closes": "17:00" }
+    ],
+    "sameAs": [
+      "https://instagram.com/[INSTAGRAM]",
+      "https://tiktok.com/@[TIKTOK]"
+    ]
+  }
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ================= NAVIGATION ================= -->
+  <header class="site-header">
+    <nav class="nav container" aria-label="Main">
+      <a class="wordmark" href="#top">
+        <svg class="wordmark__star" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg>
+        [BUSINESS NAME]
+      </a>
+
+      <button class="nav__toggle" aria-expanded="false" aria-controls="nav-menu">
+        <span class="nav__toggle-bar"></span>
+        <span class="nav__toggle-bar"></span>
+        <span class="nav__toggle-bar"></span>
+        <span class="visually-hidden">Menu</span>
+      </button>
+
+      <ul class="nav__menu" id="nav-menu">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a class="btn btn--primary btn--sm" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book Now</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Shared SVG symbols, reused with <use> so the chrome gradient is defined once -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="chrome-grad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#FFFFFF"/>
+        <stop offset=".35" stop-color="#9A9A9A"/>
+        <stop offset=".5" stop-color="#F4F4F4"/>
+        <stop offset=".7" stop-color="#5E5E5E"/>
+        <stop offset="1" stop-color="#E8E8E8"/>
+      </linearGradient>
+      <symbol id="sparkle" viewBox="0 0 100 100">
+        <path d="M50 0C53 35 65 47 100 50 65 53 53 65 50 100 47 65 35 53 0 50 35 47 47 35 50 0Z" fill="url(#chrome-grad)"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <main id="main">
+
+    <!-- ================= HERO ================= -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__chrome" aria-hidden="true">
+        <img class="chrome-shape chrome-shape--blob" src="assets/svg/chrome-blob.svg" alt="" width="400" height="400">
+        <svg class="chrome-shape sparkle sparkle--1" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
+        <svg class="chrome-shape sparkle sparkle--2" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
+        <svg class="chrome-shape sparkle sparkle--3" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
+        <svg class="chrome-shape sparkle sparkle--4" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
+      </div>
+
+      <div class="hero__content container">
+        <p class="hero__eyebrow">Hair Studio &middot; [CITY, STATE]</p>
+        <h1 class="hero__title chrome-text" id="hero-title">[BUSINESS NAME]</h1>
+        <!-- Suggested tagline; swap in your own -->
+        <p class="hero__tagline">Sharp cuts, loud color, zero boring.</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary btn--lg" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book Now</a>
+          <a class="btn btn--ghost btn--lg" href="#services">See Services</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider divider--chrome" aria-hidden="true"></div>
+
+    <!-- ================= ABOUT (light) ================= -->
+    <section class="section section--light about" id="about" aria-labelledby="about-title">
+      <div class="container about__grid">
+        <h2 class="section-title section-title--vertical" id="about-title">About</h2>
+        <div class="about__body reveal">
+          <p class="lede">[STYLIST NAME] is a licensed cosmetologist who treats every chair like a backstage pass.</p>
+          <p>[Replace this paragraph with your story: how long you've been doing hair, what you specialize in (lived-in color, shag cuts, vivids, curly cuts), and what clients can expect when they sit down. Keep it to three or four sentences. Talk the way you'd talk to a new client.]</p>
+          <p>[Optional second paragraph: training, certifications, the vibe of the studio, or a line about products you use.]</p>
+        </div>
+        <img class="about__illo about__illo--shears" src="assets/svg/shears.svg" alt="" width="120" height="120" aria-hidden="true">
+        <img class="about__illo about__illo--ladybug" src="assets/svg/ladybug.svg" alt="" width="70" height="70" aria-hidden="true">
+      </div>
+    </section>
+
+    <!-- ================= SERVICES (dark) ================= -->
+    <section class="section section--dark services halftone" id="services" aria-labelledby="services-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <h2 class="section-title" id="services-title">Services</h2>
+          <p class="section-sub">Prices are starting points. Final price depends on hair length, density, and time.</p>
+        </header>
+
+        <ul class="service-grid">
+          <!-- Duplicate an <li> to add a service. -->
+          <li class="service-card reveal">
+            <h3 class="service-card__name">Cut &amp; Style</h3>
+            <p class="service-card__desc">Consultation, wash, precision cut, and a finished style.</p>
+            <p class="service-card__price"><span class="visually-hidden">Price: </span>$[XX]+</p>
+            <a class="service-card__book" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book<span class="visually-hidden"> Cut &amp; Style</span> &rarr;</a>
+          </li>
+          <li class="service-card reveal">
+            <h3 class="service-card__name">Single-Process Color</h3>
+            <p class="service-card__desc">All-over root-to-ends color with gloss and style.</p>
+            <p class="service-card__price"><span class="visually-hidden">Price: </span>$[XX]+</p>
+            <a class="service-card__book" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book<span class="visually-hidden"> Single-Process Color</span> &rarr;</a>
+          </li>
+          <li class="service-card reveal">
+            <h3 class="service-card__name">Highlights &amp; Balayage</h3>
+            <p class="service-card__desc">Hand-painted or foiled dimension, toned to order.</p>
+            <p class="service-card__price"><span class="visually-hidden">Price: </span>$[XX]+</p>
+            <a class="service-card__book" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book<span class="visually-hidden"> Highlights &amp; Balayage</span> &rarr;</a>
+          </li>
+          <li class="service-card reveal">
+            <h3 class="service-card__name">Vivids</h3>
+            <p class="service-card__desc">Electric blues, punk pinks, and anything else you can imagine. Lightening quoted at consult.</p>
+            <p class="service-card__price"><span class="visually-hidden">Price: </span>$[XX]+</p>
+            <a class="service-card__book" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book<span class="visually-hidden"> Vivids</span> &rarr;</a>
+          </li>
+          <li class="service-card reveal">
+            <h3 class="service-card__name">Blowout</h3>
+            <p class="service-card__desc">Wash and a big, glossy blow-dry for events or just because.</p>
+            <p class="service-card__price"><span class="visually-hidden">Price: </span>$[XX]+</p>
+            <a class="service-card__book" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book<span class="visually-hidden"> Blowout</span> &rarr;</a>
+          </li>
+          <li class="service-card reveal">
+            <h3 class="service-card__name">Consultation</h3>
+            <p class="service-card__desc">Fifteen minutes to plan a big change. Required for color corrections.</p>
+            <p class="service-card__price"><span class="visually-hidden">Price: </span>Free</p>
+            <a class="service-card__book" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book<span class="visually-hidden"> Consultation</span> &rarr;</a>
+          </li>
+        </ul>
+
+        <ul class="pill-row reveal" aria-label="Specialties">
+          <li class="pill">Shags</li>
+          <li class="pill">Mullets</li>
+          <li class="pill">Curtain Bangs</li>
+          <li class="pill">Lived-in Color</li>
+          <li class="pill">Vivids</li>
+          <li class="pill">Curly Cuts</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="divider divider--checker" aria-hidden="true"></div>
+
+    <!-- ================= GALLERY (light) ================= -->
+    <section class="section section--stone gallery" id="gallery" aria-labelledby="gallery-title">
+      <div class="container">
+        <header class="section-head reveal">
+          <h2 class="section-title" id="gallery-title">The Work</h2>
+          <p class="section-sub section-sub--dark">Tap a photo to see it larger.</p>
+        </header>
+
+        <!-- Asymmetric grid: tile shapes (tall/wide/big) are set per screen size in css/styles.css (.gallery-grid). Replace alt text with a real description of each photo. -->
+        <ul class="gallery-grid">
+          <li class="tile reveal">
+            <button class="tile__btn" data-full="images/gallery-1.jpg">
+              <img src="images/gallery-1.jpg" alt="[Describe photo 1, e.g. Copper shag with curtain bangs]" loading="lazy" width="800" height="1200">
+            </button>
+          </li>
+          <li class="tile reveal">
+            <button class="tile__btn" data-full="images/gallery-2.jpg">
+              <img src="images/gallery-2.jpg" alt="[Describe photo 2]" loading="lazy" width="800" height="800">
+            </button>
+          </li>
+          <li class="tile reveal">
+            <button class="tile__btn" data-full="images/gallery-3.jpg">
+              <img src="images/gallery-3.jpg" alt="[Describe photo 3]" loading="lazy" width="1200" height="800">
+            </button>
+          </li>
+          <li class="tile reveal">
+            <button class="tile__btn" data-full="images/gallery-4.jpg">
+              <img src="images/gallery-4.jpg" alt="[Describe photo 4]" loading="lazy" width="800" height="800">
+            </button>
+          </li>
+          <li class="tile reveal">
+            <button class="tile__btn" data-full="images/gallery-5.jpg">
+              <img src="images/gallery-5.jpg" alt="[Describe photo 5]" loading="lazy" width="800" height="1200">
+            </button>
+          </li>
+          <li class="tile reveal">
+            <button class="tile__btn" data-full="images/gallery-6.jpg">
+              <img src="images/gallery-6.jpg" alt="[Describe photo 6]" loading="lazy" width="1200" height="800">
+            </button>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ================= BOOKING (dark, blue accent) ================= -->
+    <section class="section section--dark booking" id="booking" aria-labelledby="booking-title">
+      <div class="booking__chrome" aria-hidden="true">
+        <svg class="chrome-shape sparkle sparkle--b1" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
+        <svg class="chrome-shape sparkle sparkle--b2" viewBox="0 0 100 100"><use href="#sparkle"/></svg>
+      </div>
+      <div class="container booking__inner reveal">
+        <h2 class="booking__title chrome-text" id="booking-title">Get in the Chair</h2>
+        <p class="booking__line">Book 24/7 through Vagaro.</p>
+
+        <!--
+          BOOKING OPTION A (active): styled button. Replace VAGARO_BOOKING_URL everywhere on the page.
+          BOOKING OPTION B: to embed the Vagaro widget instead, paste your Vagaro embed code
+          into the .booking__embed div below, then delete the button.
+        -->
+        <a class="btn btn--primary btn--xl" href="VAGARO_BOOKING_URL" target="_blank" rel="noopener">Book Now</a>
+        <div class="booking__embed">
+          <!-- VAGARO_EMBED_HTML -->
+        </div>
+
+        <p class="booking__fine">New clients: please book a consultation before color corrections or big changes.</p>
+      </div>
+    </section>
+
+    <div class="divider divider--chrome" aria-hidden="true"></div>
+
+    <!-- ================= CONTACT (light) ================= -->
+    <section class="section section--light contact" id="contact" aria-labelledby="contact-title">
+      <div class="container contact__grid">
+        <h2 class="section-title section-title--vertical" id="contact-title">Visit</h2>
+
+        <div class="contact__block reveal">
+          <h3 class="contact__label">Find Us</h3>
+          <address class="contact__address">
+            [BUSINESS NAME]<br>
+            [STREET ADDRESS]<br>
+            [CITY, STATE ZIP]
+          </address>
+          <p><a href="tel:+1[PHONEDIGITS]">[PHONE]</a></p>
+          <p><a href="mailto:[EMAIL]">[EMAIL]</a></p>
+        </div>
+
+        <div class="contact__block reveal">
+          <h3 class="contact__label">Hours</h3>
+          <dl class="hours">
+            <div><dt>Mon</dt><dd>Closed</dd></div>
+            <div><dt>Tue&ndash;Fri</dt><dd>10:00&ndash;7:00</dd></div>
+            <div><dt>Sat</dt><dd>9:00&ndash;5:00</dd></div>
+            <div><dt>Sun</dt><dd>Closed</dd></div>
+          </dl>
+        </div>
+
+        <div class="contact__block reveal">
+          <h3 class="contact__label">Follow</h3>
+          <ul class="social">
+            <li><a href="https://instagram.com/[INSTAGRAM]" target="_blank" rel="noopener">Instagram @[INSTAGRAM]</a></li>
+            <li><a href="https://tiktok.com/@[TIKTOK]" target="_blank" rel="noopener">TikTok @[TIKTOK]</a></li>
+          </ul>
+        </div>
+
+        <img class="contact__illo" src="assets/svg/moth.svg" alt="" width="120" height="100" aria-hidden="true">
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="site-footer__checker" aria-hidden="true"></div>
+    <div class="container site-footer__inner">
+      <p class="wordmark wordmark--footer">
+        <svg class="wordmark__star" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg>
+        [BUSINESS NAME]
+      </p>
+      <ul class="footer-social">
+        <li>
+          <a href="https://instagram.com/[INSTAGRAM]" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
+          </a>
+        </li>
+        <li>
+          <a href="https://tiktok.com/@[TIKTOK]" target="_blank" rel="noopener" aria-label="TikTok">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 3c.5 2.8 2.4 4.6 5 5"/></svg>
+          </a>
+        </li>
+      </ul>
+      <p class="site-footer__copy">&copy; <span data-year>2026</span> [BUSINESS NAME]. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- ================= LIGHTBOX ================= -->
+  <dialog class="lightbox" aria-label="Photo viewer">
+    <button class="lightbox__close" aria-label="Close photo">&times;</button>
+    <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous photo">&larr;</button>
+    <img class="lightbox__img" src="" alt="">
+    <button class="lightbox__nav lightbox__nav--next" aria-label="Next photo">&rarr;</button>
+  </dialog>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>
