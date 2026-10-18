@@ -12,16 +12,15 @@ assets/svg/         chrome shapes, sparkles, line illustrations, textures
 
 ## Fill in your details
 
-Already filled in: business name (AAHairArtistry), studio (Ideation Spa, Camden, SC), Instagram (@adamarledge), and the site URL (adamarledge.github.io). Search `index.html` for the remaining placeholders:
+Already filled in: business name (AAHairArtistry), stylist (Adam Arledge), studio (Ideation Spa, 1042 Broad Street, Camden, SC 29020), Instagram (@adamarledge), and the site URL (adamarledge.github.io). Search `index.html` for the remaining placeholders:
 
 | Placeholder | Replace with |
 |---|---|
-| `[STREET ADDRESS]`, `[ZIP]` | Ideation Spa's street address and ZIP |
 | `[PHONE]` | Phone as displayed, e.g. `(555) 123-4567` |
 | `[PHONEDIGITS]` | Digits only, e.g. `5551234567` (for tap-to-call) |
 | `[EMAIL]` | Email address |
 | `[TIKTOK]` | TikTok handle without the `@` (or delete the TikTok links) |
-| `[STYLIST NAME]` + the bracketed About paragraphs | Your bio |
+| Bracketed About paragraphs | Adam's bio |
 | `$[XX]` | Service prices (edit service names/descriptions too) |
 | `VAGARO_BOOKING_URL` | Your Vagaro booking link (appears on every Book button) |
 | `[Describe photo N]` | Alt text for each gallery photo |
