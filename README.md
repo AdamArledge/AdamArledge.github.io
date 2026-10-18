@@ -12,19 +12,17 @@ assets/svg/         chrome shapes, sparkles, line illustrations, textures
 
 ## Fill in your details
 
-Search `index.html` for these placeholders and replace every occurrence:
+Already filled in: business name (AAHairArtistry), studio (Ideation Spa, Camden, SC), Instagram (@adamarledge), and the site URL (adamarledge.github.io). Search `index.html` for the remaining placeholders:
 
 | Placeholder | Replace with |
 |---|---|
-| `[BUSINESS NAME]` | Your business name |
-| `[CITY, STATE]`, `[CITY]`, `[STATE]`, `[ZIP]`, `[STREET ADDRESS]`, `[CITY, STATE ZIP]` | Your address |
+| `[STREET ADDRESS]`, `[ZIP]` | Ideation Spa's street address and ZIP |
 | `[PHONE]` | Phone as displayed, e.g. `(555) 123-4567` |
 | `[PHONEDIGITS]` | Digits only, e.g. `5551234567` (for tap-to-call) |
 | `[EMAIL]` | Email address |
-| `[INSTAGRAM]`, `[TIKTOK]` | Handles without the `@` |
+| `[TIKTOK]` | TikTok handle without the `@` (or delete the TikTok links) |
 | `[STYLIST NAME]` + the bracketed About paragraphs | Your bio |
 | `$[XX]` | Service prices (edit service names/descriptions too) |
-| `[USERNAME]` | Your GitHub username (canonical URL + social preview) |
 | `VAGARO_BOOKING_URL` | Your Vagaro booking link (appears on every Book button) |
 | `[Describe photo N]` | Alt text for each gallery photo |
 
@@ -48,7 +46,7 @@ The Booking section uses a styled button by default. To embed Vagaro's widget in
    ```
 3. **Turn on Pages.** In the repository go to **Settings → Pages**. Under "Build and deployment", set Source to **Deploy from a branch**, branch **main**, folder **/ (root)**, then Save.
 4. **Wait a minute,** then visit the published URL shown at the top of the Pages settings.
-5. **Custom domain (optional).** Enter your domain in Settings → Pages → Custom domain, then add the DNS records from GitHub's guide: [Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site). Tick **Enforce HTTPS** once it's available. If you use a custom domain, update the `[USERNAME].github.io` URLs in `<head>` to match.
+5. **Custom domain (optional).** Enter your domain in Settings → Pages → Custom domain, then add the DNS records from GitHub's guide: [Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site). Tick **Enforce HTTPS** once it's available. If you use a custom domain, update the `adamarledge.github.io` URLs in `<head>` to match.
 
 All paths are relative, so the site works as either a root or a project site without changes.
 
