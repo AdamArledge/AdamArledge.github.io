@@ -142,6 +142,7 @@ a { color: inherit; }
 .btn--ghost {
   color: var(--off-white);
   border: 4px solid var(--off-white);
+  background: rgba(20, 19, 17, .85); /* keeps the label clear of the ASCII hair behind it */
 }
 /* Ghost hover = checkerboard border. Two backgrounds: a solid fill clipped to the
    padding box keeps the label legible; the checker shows only through the border. */
@@ -300,7 +301,7 @@ a { color: inherit; }
   position: relative;
   min-height: calc(100svh - 64px);
   display: grid;
-  align-items: end; /* mobile: text below the ASCII figure */
+  align-items: center;
   overflow: hidden;
   background:
     radial-gradient(ellipse at 75% 30%, rgba(128, 143, 123, .28), transparent 55%),
@@ -313,18 +314,16 @@ a { color: inherit; }
   filter: drop-shadow(0 12px 30px rgba(0, 0, 0, .6));
   transition: transform .8s var(--ease), filter .8s var(--ease);
 }
-/* ASCII hair canvas fills the hero; faded where it sits behind the text */
+/* ASCII hair sweep fills the hero, behind the text */
 .hero__ascii {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  -webkit-mask-image: linear-gradient(to bottom, #000 40%, rgba(0, 0, 0, .3) 75%);
-          mask-image: linear-gradient(to bottom, #000 40%, rgba(0, 0, 0, .3) 75%);
 }
 .sparkle { width: 48px; height: 48px; }
 .sparkle--1 { top: 12%; left: 8%; width: 36px; height: 36px; animation: twinkle 4s ease-in-out infinite; }
-.sparkle--3 { display: none; bottom: 10%; left: 18%; width: 26px; height: 26px; animation: twinkle 3.6s ease-in-out 1.6s infinite; }
+.sparkle--3 { bottom: 10%; left: 18%; width: 26px; height: 26px; animation: twinkle 3.6s ease-in-out 1.6s infinite; }
 
 /* Gentle hover on chrome: the hero is pointer-events:none, so react to hovering the section */
 .hero:hover .sparkle { transform: rotate(45deg) scale(1.1); }
@@ -347,7 +346,7 @@ a { color: inherit; }
   letter-spacing: -.02em;
   max-width: 12ch;
   overflow-wrap: anywhere;
-  /* Dark offset edge so chrome letters stay legible over the ASCII figure */
+  /* Dark offset edge so chrome letters stay legible over the ASCII hair */
   filter: drop-shadow(3px 4px 0 rgba(20, 19, 17, .85));
 }
 .hero__tagline {
@@ -693,20 +692,6 @@ a { color: inherit; }
   }
 
   .site-footer__inner { flex-direction: row; justify-content: space-between; text-align: left; }
-}
-
-/* =========================================================
-   HERO SIDE-BY-SIDE — wide landscape screens put the ASCII figure
-   beside the title. Phones and any portrait screen keep it stacked
-   above the text. js/hair.js uses the same query (STACKED).
-   ========================================================= */
-@media (min-width: 768px) and (orientation: landscape) {
-  .hero { align-items: center; }
-  .sparkle--3 { display: block; } /* hidden when stacked, where the buttons sit at the bottom */
-  .hero__ascii {
-    -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, .25) 20%, #000 55%);
-            mask-image: linear-gradient(to right, rgba(0, 0, 0, .25) 20%, #000 55%);
-  }
 }
 
 /* =========================================================

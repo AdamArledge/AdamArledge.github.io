@@ -1,31 +1,33 @@
-// Hero centerpiece: a bowed, featureless head in profile whose hair drifts on a
-// curl-noise flow field, drawn as ASCII characters on a <canvas>.
+// Hero background: a sweep of long, wavy hair flowing across the hero behind the
+// brand name, drawn as ASCII characters on a <canvas>.
 //
-// Each frame:
-//   1. Move the strands. A strand is a chain of fixed-length segments; each
-//      segment keeps the previous one's direction and is bent by the flow field,
-//      more strongly toward the tip, so roots hold and ends float.
-//   2. Sample every segment into the character grid, recording how much hair
-//      passes through each cell and which way it runs.
-//   3. Draw one character per cell: a line character that follows the hair's
-//      direction (- | / \), or a density character (* # % @) where strands pile up.
-// The motion is computed at full precision and only *displayed* as text, which
-// is why the curves stay smooth.
+// Each strand runs from off-screen left to the right edge along a band centered
+// on the title. The band is narrow at the roots and fans out toward the tips.
+// Two travelling sine waves roll along every strand from root to tip; strands in
+// the same lock share their wave phase, so locks move together and cross over
+// neighbouring locks. A slow noise term varies each lock's amplitude so the
+// motion never looks mechanical.
+//
+// Rendering: every strand is sampled into the character grid, recording how much
+// hair passes through each cell and which way it runs. Each cell then gets a
+// line character that follows the hair (- / \ |), or a density character
+// (* # % @) where locks cross.
 (function () {
   "use strict";
 
   var canvas = document.querySelector(".hero__ascii");
   if (!canvas || !canvas.getContext) return;
   var hero = canvas.closest(".hero");
+  var title = hero.querySelector(".hero__title");
+  var eyebrow = hero.querySelector(".hero__eyebrow");
+  var tagline = hero.querySelector(".hero__tagline");
   var ctx = canvas.getContext("2d");
   var atlas = document.createElement("canvas");
   var actx = atlas.getContext("2d");
   var reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-  // Figure above the text (phones, any portrait screen) vs beside it; matches css/styles.css
-  var STACKED = window.matchMedia("(max-width: 767px), (orientation: portrait)");
 
   // ---------- Look ----------
-  var CHARS = ".:-|/\\~+*#%@";
+  var CHARS = ".:-|/\\+*#%@";
   var C = {};
   for (var ci = 0; ci < CHARS.length; ci++) C[CHARS[ci]] = ci;
   var DENSE = [C["+"], C["*"], C["#"], C["%"], C["@"]];
@@ -36,32 +38,10 @@
     // electric-blue locks
     ["#1b2456", "#222f85", "#293bb0", "#3049d8", "#3B5BFF", "#566fff", "#7086ff", "#8d9eff", "#adb9ff", "#d2d9ff"]
   ];
-  var TILT = -0.55;   // head bowed forward (radians)
-  var BODY_TILT = -0.12;
-  var BEND = 1.0;     // how hard the flow field bends each segment
-  var SPRING = 0.03;  // pull back toward the resting (outward) direction, so the shape stays radial
-  var EASE = 0.1;     // per-frame easing toward the new shape: the "silkiness"
-  var SAMPLE = 2.5;   // px between samples when laying a segment into the grid
-  var MAX_TURN = 0.3;  // max bend per segment (radians): sets the tightest curl, so hair loops instead of crumpling
+  var SAMPLE = 2.5;   // px between samples when laying a strand into the grid
+  var STEP = 6;       // px between points along a strand
 
-  // Head outline in head-height units, facing left; (0,0) is the center of the head.
-  // Points below v = 0.55 form the neck and shoulders, run off the bottom of the
-  // canvas, and get a gentler tilt so the shoulders drop instead of swinging up.
-  var OUTLINE = [
-    [0.02, -0.56], [0.25, -0.5], [0.42, -0.32], [0.5, -0.05], [0.44, 0.22], [0.3, 0.42],
-    [0.3, 0.62], [0.42, 0.95], [0.85, 1.25], [1.5, 1.45], [2.4, 1.8], [2.4, 3.6],
-    [-0.9, 3.6], [-0.75, 1.9], [-0.35, 1.2], [-0.16, 0.85],
-    [-0.12, 0.62], [-0.24, 0.52], [-0.38, 0.44],
-    [-0.45, 0.35], [-0.41, 0.3], [-0.48, 0.25], [-0.44, 0.19],
-    [-0.6, 0.1], [-0.44, -0.04], [-0.46, -0.13], [-0.38, -0.36], [-0.2, -0.5]
-  ];
-  // Hairline arc (radians around the head center): forehead -> crown -> nape.
-  // Long hair starts behind the forehead so the face stays clear.
-  var SCALP = { x: 0.03, y: -0.06, from: 3.75, to: 7.25, longFrom: 4.35 };
-
-  // ---------- Noise ----------
-  // Improved Perlin noise (3D: x, y, time) with a fixed permutation so the
-  // figure looks the same on every visit.
+  // ---------- Noise (slow amplitude drift + background dust) ----------
   var perm = new Uint8Array(512);
   var rand = mulberry32(20261018);
   (function () {
@@ -99,44 +79,15 @@
       lerp(lerp(grad(perm[AA + 1], x, y, z - 1), grad(perm[BA + 1], x - 1, y, z - 1), u),
            lerp(grad(perm[AB + 1], x, y - 1, z - 1), grad(perm[BB + 1], x - 1, y - 1, z - 1), u), v), w);
   }
-  // Curl of the noise field: a swirling flow with no sources or sinks, like an
-  // incompressible fluid. Strands carried by it loop around each other instead
-  // of clumping, which gives the slow underwater curls.
-  var EPS = 0.01;
-  function curl(x, y, t, out) {
-    out.x = (noise3(x, y + EPS, t) - noise3(x, y - EPS, t)) / (2 * EPS);
-    out.y = -(noise3(x + EPS, y, t) - noise3(x - EPS, y, t)) / (2 * EPS);
-  }
+  function smoothstep(a, b, x) { x = Math.max(0, Math.min(1, (x - a) / (b - a))); return x * x * (3 - 2 * x); }
 
   // ---------- State ----------
   var w, h, dpr, cols, rows, cw, ch, fontSize, gw, gh;
-  var cx, cy, H, cosA, sinA, cosB, sinB;
-  var silhouette, mask, strands;
-  var amount, dirC, dirS, blueAmt; // per-cell accumulators
+  var band;   // where the sweep runs: centered on the title
+  var behind; // text block (eyebrow, title, tagline) in grid cells; hair there is dimmed so it reads as depth
+  var strands, amount, dirC, dirS, blueAmt;
+  var dust, frameNo = 0; // background dust: 0 none, 1 ".", 2 ":"; drifts slowly, so refreshed every 5th frame
   var running = false, inView = true, last = 0, frameMs = 1000 / 30;
-  var flow = { x: 0, y: 0 };
-
-  function toScreen(u, v) {
-    return [cx + H * (u * cosA - v * sinA), cy + H * (u * sinA + v * cosA)];
-  }
-  function outlineToScreen(p) {
-    if (p[1] <= 0.55) return toScreen(p[0], p[1]);
-    // Body: pivot at the neck so it joins the head, but tilt less
-    var neck = toScreen(0, 0.55), u = p[0], v = p[1] - 0.55;
-    return [neck[0] + H * (u * cosB - v * sinB), neck[1] + H * (u * sinB + v * cosB)];
-  }
-
-  // Closed curve through the midpoints of the outline, using each point as a control point
-  function smoothPath(pts) {
-    var p = new Path2D(), n = pts.length, i, c, nx;
-    p.moveTo((pts[0][0] + pts[1][0]) / 2, (pts[0][1] + pts[1][1]) / 2);
-    for (i = 1; i <= n; i++) {
-      c = pts[i % n]; nx = pts[(i + 1) % n];
-      p.quadraticCurveTo(c[0], c[1], (c[0] + nx[0]) / 2, (c[1] + nx[1]) / 2);
-    }
-    p.closePath();
-    return p;
-  }
 
   function layout() {
     var r = hero.getBoundingClientRect();
@@ -146,7 +97,7 @@
     canvas.width = Math.round(w * dpr);
     canvas.height = Math.round(h * dpr);
 
-    var mobile = w < 768, stacked = STACKED.matches;
+    var mobile = w < 768;
     frameMs = 1000 / (mobile ? 20 : 30); // the motion is slow, so phones can save battery
     fontSize = mobile ? 10 : 12;
     ctx.font = fontSize + "px 'Space Mono', monospace";
@@ -158,99 +109,52 @@
     dirC = new Float32Array(cols * rows);
     dirS = new Float32Array(cols * rows);
     blueAmt = new Float32Array(cols * rows);
+    dust = new Uint8Array(cols * rows);
+    frameNo = 0;
 
-    // Figure: right of the title on wide screens, top half when stacked (text sits below)
-    H = stacked ? Math.min(w * 0.27, h * 0.16) : Math.min(h * 0.24, w * 0.15);
-    cx = stacked ? w * 0.6 : w * 0.74;
-    cy = stacked ? h * 0.32 : h * 0.63;
-    cosA = Math.cos(TILT); sinA = Math.sin(TILT);
-    cosB = Math.cos(BODY_TILT); sinB = Math.sin(BODY_TILT);
+    // The sweep passes behind the brand name, rising gently to the right
+    var t = title.getBoundingClientRect();
+    band = {
+      x0: -0.12 * w, x1: w * 1.04,                  // roots off-screen left, tips at the right edge
+      cx: t.left - r.left + t.width * 0.45,
+      cy: t.top - r.top + t.height * 0.5,
+      slope: mobile ? -0.12 : -0.07,                // rise per px (negative = up to the right)
+      root: h * (mobile ? 0.14 : 0.16),             // band half-width at the roots
+      tip: h * (mobile ? 0.24 : 0.26),              // ...and at the tips
+      amp: h * (mobile ? 0.06 : 0.085)              // main wave height
+    };
+    var top = (eyebrow || title).getBoundingClientRect(), tag = (tagline || title).getBoundingClientRect();
+    behind = {
+      x0: Math.floor((t.left - r.left) / cw), x1: Math.ceil((Math.max(t.right, tag.right) - r.left) / cw),
+      y0: Math.floor((top.top - r.top) / ch), y1: Math.ceil((tag.bottom - r.top) / ch)
+    };
 
-    silhouette = smoothPath(OUTLINE.map(outlineToScreen));
-    buildMask();
     buildStrands(mobile);
     buildAtlas();
-
-    // Let the strands settle into the flow field before the first paint
-    var t = performance.now() / 1000;
-    step(t, 1); // with no easing one pass computes the settled shape
-    render(t);
-  }
-
-  // Which text cells are inside the head (1), on its lit edge (2) or its shaded edge (3)
-  function buildMask() {
-    var m = document.createElement("canvas");
-    m.width = cols; m.height = rows;
-    var mctx = m.getContext("2d");
-    mctx.setTransform(cols / w, 0, 0, rows / h, 0, 0);
-    mctx.fill(silhouette);
-    var a = mctx.getImageData(0, 0, cols, rows).data;
-    var inside = new Uint8Array(cols * rows), x, y, i;
-    for (i = 0; i < inside.length; i++) inside[i] = a[i * 4 + 3] > 127 ? 1 : 0;
-    mask = new Uint8Array(cols * rows);
-    for (y = 0; y < rows; y++) {
-      for (x = 0; x < cols; x++) {
-        i = y * cols + x;
-        if (!inside[i]) continue;
-        var left = x > 0 && !inside[i - 1];
-        var right = x < cols - 1 && !inside[i + 1];
-        var up = y > 0 && !inside[i - cols];
-        var down = y < rows - 1 && !inside[i + cols];
-        // The face points left, so light catches the left edges (forehead, nose, chin, throat)
-        mask[i] = left ? 2 : (right || up || down) ? 3 : 1;
-      }
-    }
-  }
-
-  // One strand. Strands in the same lock share `phase`, so they read the same
-  // part of the flow field and travel together.
-  function addStrand(angle, rootR, n, segK, phase, blue, fuzz) {
-    var root = toScreen(SCALP.x + Math.cos(angle) * rootR, SCALP.y + Math.sin(angle) * rootR);
-    // Outward from the scalp, biased up and back, away from the face
-    var nx = Math.cos(angle) * cosA - Math.sin(angle) * sinA;
-    var ny = Math.cos(angle) * sinA + Math.sin(angle) * cosA;
-    var bx = nx * 0.75 + 0.5, by = ny * 0.75 - 0.35, d = Math.hypot(bx, by);
-    var s = {
-      rx: root[0], ry: root[1], bx: bx / d, by: by / d, n: n, len: H * segK,
-      xs: new Float32Array(n + 1), ys: new Float32Array(n + 1), ang: new Float32Array(n + 1), bright: new Float32Array(n + 1),
-      blue: blue, gain: 0.8 + rand() * 0.4, phase: phase
-    };
-    for (var i = 0; i <= n; i++) {
-      s.xs[i] = s.rx + s.bx * s.len * i;
-      s.ys[i] = s.ry + s.by * s.len * i;
-      s.ang[i] = Math.atan2(s.by, s.bx);
-      // Dim at the root, brightening through the length, softening at the very tip
-      var f = i / n, b;
-      if (fuzz) b = 0.3;
-      else {
-        // Like the photo: dark at the roots (they merge into the head), light toward the tips
-        b = Math.max(0, Math.min(1, (f - 0.12) / 0.6));
-        if (f > 0.88) b *= 1 - (f - 0.88) / 0.12 * 0.6;
-      }
-      s.bright[i] = b;
-    }
-    strands.push(s);
+    render(performance.now() / 1000);
   }
 
   function buildStrands(mobile) {
     rand = mulberry32(7);
     strands = [];
-    var locks = mobile ? 13 : 19, fuzz = mobile ? 18 : 30, i, j, u, a, n, phase, blue;
+    var locks = mobile ? 11 : 15, i, j;
     for (i = 0; i < locks; i++) {
-      u = (rand() + rand()) / 2; // triangular: more locks at the crown than at the edges
-      a = SCALP.longFrom + (SCALP.to - SCALP.longFrom) * u;
-      n = 22 + Math.floor(rand() * 22);
-      phase = rand() * 20;
-      blue = rand() < 0.15;
-      // Three strands per lock, roots side by side, slightly different lengths
-      for (j = 0; j < 3; j++) {
-        addStrand(a + (j - 1) * 0.14, 0.44, n - Math.floor(rand() * 8), 0.05, phase + j * 0.08, blue, false);
+      // Each lock: a lane in the band, its own wave phase and speed, 3-4 strands
+      var lane = (i / (locks - 1)) * 2 - 1 + (rand() - 0.5) * 0.15;
+      var lock = {
+        phase: rand() * Math.PI * 2, phase2: rand() * Math.PI * 2,
+        speed: 0.45 + rand() * 0.3, gain: 0.7 + rand() * 0.5, seed: rand() * 50,
+        blue: rand() < 0.15, bright: 0.65 + rand() * 0.35
+      };
+      var n = 3 + Math.floor(rand() * 2);
+      for (j = 0; j < n; j++) {
+        strands.push({
+          lock: lock,
+          lane: lane + (j - (n - 1) / 2) * 0.045, // strands in a lock sit side by side
+          drift: (rand() - 0.5) * 0.4,            // tiny phase difference so they shimmer apart
+          end: 0.86 + rand() * 0.14               // tips end at slightly different lengths
+        });
       }
-    }
-    // Short fuzz all along the hairline gives the crown its dense core
-    for (i = 0; i < fuzz; i++) {
-      u = (rand() + rand()) / 2;
-      addStrand(SCALP.from + (SCALP.to - SCALP.from) * u, 0.4, 4 + Math.floor(rand() * 5), 0.055, rand() * 20, false, true);
     }
   }
 
@@ -273,117 +177,90 @@
     }
   }
 
-  function step(time, ease) {
-    var tt = time * 0.06, fs = 1.2 / H;
-    for (var k = 0; k < strands.length; k++) {
-      var s = strands[k];
-      // Slow sway of the whole strand around its resting direction
-      var sw = 0.2 * Math.sin(time * 0.3 + s.phase), c = Math.cos(sw), sn = Math.sin(sw);
-      var bx = s.bx * c - s.by * sn, by = s.bx * sn + s.by * c;
-      // Walk the *target* shape (depends only on time) and ease each segment's
-      // angle toward it, then rebuild positions from the angles. Easing angles
-      // rather than positions keeps lengths exact and can't build up lag.
-      var base = Math.atan2(by, bx), cur = base, px = s.rx, py = s.ry, ax = s.rx, ay = s.ry;
-      for (var i = 1; i <= s.n; i++) {
-        curl(px * fs + s.phase, py * fs + s.phase * 0.7, tt, flow);
-        var dx = Math.cos(cur), dy = Math.sin(cur);
-        // The flow only bends the strand sideways (its component across the strand),
-        // more toward the tip; a spring pulls it back toward its outward direction.
-        // The deviation is wrapped to ±π, so a strand curled past halfway finishes
-        // the loop instead of snapping back.
-        var dev = cur - base;
-        dev -= Math.round(dev / (2 * Math.PI)) * 2 * Math.PI;
-        var f = i / s.n;
-        var turn = BEND * f * Math.sqrt(f) * s.gain * (dx * flow.y - dy * flow.x) - SPRING * dev;
-        if (turn > MAX_TURN) turn = MAX_TURN;
-        else if (turn < -MAX_TURN) turn = -MAX_TURN;
-        cur += turn;
-        px += Math.cos(cur) * s.len;
-        py += Math.sin(cur) * s.len;
-        var da = cur - s.ang[i];
-        da -= Math.round(da / (2 * Math.PI)) * 2 * Math.PI;
-        s.ang[i] += da * ease;
-        ax = s.xs[i] = ax + Math.cos(s.ang[i]) * s.len;
-        ay = s.ys[i] = ay + Math.sin(s.ang[i]) * s.len;
-      }
-    }
+  // y of a strand at horizontal position x (s = 0 at the roots, 1 at the right edge)
+  function strandY(st, x, s, t, ampMod) {
+    var L = st.lock, b = band;
+    var k1 = (Math.PI * 2) / (w * 0.45), k2 = (Math.PI * 2) / (w * 0.17);
+    // Roots barely move, tips swing most; "- t * speed" makes the waves travel toward the tips
+    var env = 0.35 + 0.65 * s;
+    var wave = Math.sin(k1 * x - t * L.speed + L.phase + st.drift) +
+               0.4 * Math.sin(k2 * x - t * L.speed * 1.7 + L.phase2 + st.drift);
+    var spread = lerp(b.root, b.tip, Math.pow(s, 1.4)) * st.lane;
+    return b.cy + (x - b.cx) * b.slope + spread + wave * b.amp * env * L.gain * ampMod;
   }
 
-  // Lay every segment into the grid. Direction is stored as (cos 2θ, sin 2θ) so a
+  // Lay every strand into the grid. Direction is stored as (cos 2θ, sin 2θ) so a
   // strand heading left and one heading right both count as "horizontal" instead
   // of cancelling each other out.
-  function accumulate() {
+  function accumulate(t) {
     amount.fill(0); dirC.fill(0); dirS.fill(0); blueAmt.fill(0);
+    var span = band.x1 - band.x0;
     for (var k = 0; k < strands.length; k++) {
-      var s = strands[k];
-      for (var i = 1; i <= s.n; i++) {
-        var x0 = s.xs[i - 1], y0 = s.ys[i - 1], ex = s.xs[i] - x0, ey = s.ys[i] - y0;
-        var len = Math.hypot(ex, ey) || 1, ux = ex / len, uy = ey / len;
-        var c2 = ux * ux - uy * uy, s2 = 2 * ux * uy, b = s.bright[i];
+      var st = strands[k], L = st.lock;
+      var ampMod = 0.75 + 0.5 * noise3(L.seed, t * 0.05, 0.5);
+      var xEnd = band.x0 + span * st.end;
+      var px = band.x0, py = strandY(st, px, 0, t, ampMod);
+      for (var x = band.x0 + STEP; x <= xEnd; x += STEP) {
+        var s = (x - band.x0) / span;
+        var y = strandY(st, x, s, t, ampMod);
+        // Dim where the roots enter, full through the middle, fading at the tips
+        var b = L.bright * smoothstep(0.05, 0.3, s) * (1 - 0.7 * smoothstep(st.end - 0.18, st.end, s));
+        var ex = x - px, ey = y - py, len = Math.hypot(ex, ey), ux = ex / len, uy = ey / len;
+        var c2 = ux * ux - uy * uy, s2 = 2 * ux * uy;
         var steps = Math.max(1, Math.round(len / SAMPLE));
         for (var j = 0; j < steps; j++) {
-          var t = (j + 0.5) / steps;
-          var gx = Math.floor((x0 + ex * t) / cw), gy = Math.floor((y0 + ey * t) / ch);
+          var f = (j + 0.5) / steps;
+          var gx = Math.floor((px + ex * f) / cw), gy = Math.floor((py + ey * f) / ch);
           if (gx < 0 || gy < 0 || gx >= cols || gy >= rows) continue;
           var idx = gy * cols + gx;
           amount[idx] += b;
           dirC[idx] += c2 * b;
           dirS[idx] += s2 * b;
-          if (s.blue) blueAmt[idx] += b;
+          if (L.blue) blueAmt[idx] += b;
         }
+        px = x; py = y;
       }
     }
   }
 
-  function render(time) {
-    accumulate();
+  function render(t) {
+    accumulate(t);
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, w, h);
-    // Silhouette as a smooth dark void, plus the dark mass of hair at the crown
-    // (the root third of each long strand, stroked thick)
-    ctx.fillStyle = ctx.strokeStyle = "rgba(14, 13, 12, 0.94)";
-    ctx.fill(silhouette);
-    var core = new Path2D();
-    for (var k = 0; k < strands.length; k++) {
-      var s = strands[k], end = Math.ceil(s.n * 0.22);
-      if (s.n < 10) continue;
-      core.moveTo(s.rx, s.ry);
-      for (var i = 1; i <= end; i++) core.lineTo(s.xs[i], s.ys[i]);
+    if (frameNo++ % 5 === 0) {
+      var dz = t * 0.05, di = 0;
+      for (var dy = 0; dy < rows; dy++) {
+        for (var dx = 0; dx < cols; dx++, di++) {
+          var n = noise3(dx * 0.09, dy * 0.18, dz);
+          dust[di] = n > 0.52 ? 2 : n > 0.4 ? 1 : 0;
+        }
+      }
     }
-    ctx.lineWidth = H * 0.06;
-    ctx.lineCap = ctx.lineJoin = "round";
-    ctx.stroke(core);
-
-    var dust = time * 0.05, idx = 0;
+    var idx = 0;
     for (var y = 0; y < rows; y++) {
       for (var x = 0; x < cols; x++, idx++) {
         var a = amount[idx];
-        if (a > 0.25) {
-          var v = Math.min(1, a / 3.5);
+        if (a > 0.3) {
+          var v = Math.min(1, a / 3.2);
+          if (x >= behind.x0 && x < behind.x1 && y >= behind.y0 && y < behind.y1) { v *= 0.5; a = Math.min(a, 7); }
           var level = Math.min(LEVELS - 1, Math.floor(Math.pow(v, 0.7) * LEVELS));
           var pal = blueAmt[idx] > a * 0.5 ? 1 : 0;
           var coherence = Math.hypot(dirC[idx], dirS[idx]) / a;
           var c;
-          if (a > 9 || coherence < 0.4) {
-            // Strands piling up or crossing: density character
-            c = DENSE[Math.min(DENSE.length - 1, Math.floor(Math.min(1, a / 16) * DENSE.length))];
+          if (a > 7.5 || coherence < 0.35) {
+            // Locks crossing: density character
+            c = DENSE[Math.min(DENSE.length - 1, Math.floor(Math.min(1, a / 14) * DENSE.length))];
           } else {
-            // A single strand or lock: follow its direction. θ = atan2(sin2θ, cos2θ) / 2,
-            // in screen space where +y is down, so a positive angle runs down-right: "\"
-            var ang = Math.atan2(dirS[idx], dirC[idx]) / 2;
-            var aa = Math.abs(ang);
-            c = aa < 0.39 ? C["-"] : aa > 1.18 ? C["|"] : ang > 0 ? C["\\"] : C["/"];
+            // Follow the hair. θ = atan2(sin2θ, cos2θ) / 2, in screen space where +y
+            // is down, so a positive angle runs down-right: "\"
+            var ang = Math.atan2(dirS[idx], dirC[idx]) / 2, aa = Math.abs(ang);
+            c = aa < 0.3 ? C["-"] : aa > 1.18 ? C["|"] : ang > 0 ? C["\\"] : C["/"];
           }
           glyph(c, pal, level, x, y);
           continue;
         }
-        var m = mask[idx];
-        if (m === 1) continue;
-        if (m === 2) { glyph(C[":"], 0, 7, x, y); continue; }
-        if (m === 3) { glyph(C["."], 0, 3, x, y); continue; }
-        // Faint drifting dust everywhere else, so the head reads as an absence
-        var n = noise3(x * 0.09, y * 0.18, dust);
-        if (n > 0.38) glyph(n > 0.5 ? C[":"] : C["."], 0, 0, x, y);
+        // Faint drifting dust everywhere else
+        if (dust[idx]) glyph(dust[idx] === 2 ? C[":"] : C["."], 0, 0, x, y);
       }
     }
   }
@@ -398,7 +275,6 @@
     requestAnimationFrame(frame);
     if (now - last < frameMs) return;
     last = now;
-    step(now / 1000, EASE);
     render(now / 1000);
   }
   function update() {
@@ -411,7 +287,7 @@
     new IntersectionObserver(function (e) { inView = e[0].isIntersecting; update(); }).observe(hero);
   }
   document.addEventListener("visibilitychange", update);
-  // With reduced motion the figure stays as a still frame
+  // With reduced motion the sweep stays as a still frame
   if (reduceMotion.addEventListener) reduceMotion.addEventListener("change", update);
   else reduceMotion.addListener(update);
 
@@ -425,6 +301,6 @@
 
   layout();
   update();
-  // Space Mono changes the character width once it loads
+  // Space Mono changes the character width, and the title's size, once fonts load
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 })();
