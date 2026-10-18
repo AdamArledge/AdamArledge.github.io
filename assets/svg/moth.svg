@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 100" fill="none" stroke="#3B5BFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Moth line illustration">
-  <path d="M60 28v52"/>
-  <path d="M60 30c-4-10-10-16-16-20M60 30c4-10 10-16 16-20"/>
-  <path d="M58 38C40 14 8 12 6 30s22 26 52 18"/>
-  <path d="M62 38c18-24 50-26 52-8s-22 26-52 18"/>
-  <path d="M58 52c-20 0-38 10-34 24s24 8 34-10"/>
-  <path d="M62 52c20 0 38 10 34 24s-24 8-34-10"/>
-  <circle cx="30" cy="30" r="5"/><circle cx="90" cy="30" r="5"/>
-</svg>

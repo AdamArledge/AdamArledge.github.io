@@ -1,0 +1,176 @@
+<!doctype html>
+{{{generatedNotice}}}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{{business.name}} | Hair by {{business.stylist}} in {{address.city}}, {{address.region}}</title>
+  <meta name="description" content="{{metaDescription}}">
+  <meta name="theme-color" content="#F2EFE8">
+  <link rel="canonical" href="{{business.siteUrl}}">
+
+  <!-- Social previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{business.name}}">
+  <meta property="og:title" content="{{business.name}} | Hair by {{business.stylist}} in {{address.city}}, {{address.region}}">
+  <meta property="og:description" content="{{business.tagline}} Inside {{business.studio}}, {{address.city}}, {{address.region}}.">
+  <meta property="og:url" content="{{business.siteUrl}}">
+  <meta property="og:image" content="{{business.siteUrl}}images/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="{{business.name}} wordmark with the tagline {{business.tagline}}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/svg/favicon.svg" type="image/svg+xml">
+
+  <!-- Fonts: Anton (display), DM Sans (body and interface), Instrument Serif Italic (accent) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <!-- Business details for search engines, generated from content/site.mjs -->
+  <script type="application/ld+json">
+{{{jsonLd}}}
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Four-point sparkle, the one recurring motif. Color comes from CSS (currentColor). -->
+  <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="sparkle" viewBox="0 0 100 100">
+      <path d="M50 0C52.6 34 66 47.4 100 50 66 52.6 52.6 66 50 100 47.4 66 34 52.6 0 50 34 47.4 47.4 34 50 0Z" fill="currentColor"/>
+    </symbol>
+    <!-- "Opens in a new tab" arrow used on booking buttons -->
+    <symbol id="icon-new-tab" viewBox="0 0 16 16">
+      <path d="M6 3.5h6.5V10M12.5 3.5 3.5 12.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
+    </symbol>
+  </svg>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <div class="container site-header__bar">
+      <a class="wordmark" href="#top" aria-label="{{business.name}}, back to top">
+        {{business.name}}<svg class="wordmark__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg>
+      </a>
+
+      <nav class="nav" aria-label="Main">
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
+          <span class="nav__toggle-icon" aria-hidden="true"></span>
+          <span class="nav__toggle-label">Menu</span>
+        </button>
+        <ul class="nav__menu" id="nav-menu">
+{{{navItems}}}
+        </ul>
+      </nav>
+
+      <a class="btn btn--primary btn--sm site-header__book" href="{{booking.url}}" target="_blank" rel="noopener"><span>Book<span class="site-header__book-more"> an appointment</span></span><span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= HERO =================
+         Typography-led until a real photo is available. To add one, put a
+         <figure class="hero__photo"><img ...></figure> after .hero__body and add
+         the class "hero--photo" to the section. -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="container hero__inner">
+        <p class="hero__place"><span>{{address.city}}, {{address.region}}</span><span class="hero__dot" aria-hidden="true">&middot;</span><span>Inside {{business.studio}}</span></p>
+
+        <h1 class="hero__title" id="hero-title">{{{heroTitle}}}<svg class="hero__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg></h1>
+
+        <div class="hero__body">
+          <p class="hero__tagline">{{{taglineHtml}}}</p>
+          <div class="hero__detail">
+            <p class="hero__summary">{{business.summary}}</p>
+            <div class="actions">
+              <a class="btn btn--primary" href="{{booking.url}}" target="_blank" rel="noopener">Book an appointment<span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
+              <a class="link-arrow" href="#services">View services<span class="link-arrow__icon" aria-hidden="true">&rarr;</span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+{{{workSection}}}
+    <!-- ================= SERVICES ================= -->
+    <section class="section services" id="services" aria-labelledby="services-title">
+      <div class="container services__layout">
+        <div class="services__intro">
+          <h2 class="section-title" id="services-title">Services</h2>
+          <p class="services__lede">{{servicesLede}}</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="{{booking.url}}" target="_blank" rel="noopener">Book an appointment<span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
+{{{consultButton}}}
+          </div>
+          <p class="fine-print">Booking opens Vagaro in a new tab.{{bookingInstructionsInline}}</p>
+        </div>
+
+        <div class="services__list">
+{{{servicesList}}}
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MEET ADAM ================= -->
+    <section class="section section--stone about" id="about" aria-labelledby="about-title">
+      <div class="container about__layout{{aboutLayoutClass}}">
+        <h2 class="section-title" id="about-title">Meet Adam</h2>
+        <div class="about__body">
+          <p class="about__lede">{{business.stylist}} is the stylist behind {{business.name}}, taking clients inside {{business.studio}} on {{address.streetName}} in {{address.city}}.</p>
+{{{aboutParagraphs}}}
+          <p>Follow Adam on Instagram at <a href="{{instagram.url}}" target="_blank" rel="noopener">{{instagram.handle}}<span class="visually-hidden"> (opens in a new tab)</span></a>.</p>
+        </div>
+{{{portrait}}}
+      </div>
+    </section>
+{{{reviewsSection}}}{{{firstVisitSection}}}
+    <!-- ================= VISIT + BOOK ================= -->
+    <section class="section section--ink visit" id="visit" aria-labelledby="visit-title">
+      <div class="container visit__layout">
+        <div class="visit__info">
+          <h2 class="section-title" id="visit-title">Visit</h2>
+          <p class="visit__studio">{{business.name}} is inside <strong>{{business.studio}}</strong>.</p>
+          <address class="visit__address">
+            {{address.street}}<br>
+            {{address.city}}, {{address.region}} {{address.postalCode}}
+          </address>
+          <ul class="visit__links">
+            <li><a class="link-arrow link-arrow--light" href="{{directionsUrl}}" target="_blank" rel="noopener">Get directions<span class="visually-hidden"> (opens Google Maps in a new tab)</span><span class="link-arrow__icon" aria-hidden="true">&rarr;</span></a></li>
+{{{moreLinksItem}}}
+          </ul>
+{{{contactDetails}}}
+        </div>
+
+        <div class="book-panel" id="book">
+          <svg class="book-panel__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg>
+          <h3 class="book-panel__title">Book an appointment</h3>
+          <p>Appointments are booked online through Vagaro.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="{{booking.url}}" target="_blank" rel="noopener">Book an appointment<span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
+{{{consultButton}}}
+          </div>
+          <p class="fine-print">Opens Vagaro in a new tab.{{bookingInstructionsInline}}</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="site-footer">
+    <div class="container site-footer__inner">
+      <p class="wordmark wordmark--footer">{{business.name}}<svg class="wordmark__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg></p>
+      <p class="site-footer__place">Inside {{business.studio}} &middot; {{address.street}}, {{address.city}}, {{address.region}} {{address.postalCode}}</p>
+      <ul class="site-footer__links">
+{{{footerLinks}}}
+      </ul>
+      <p class="site-footer__copy">&copy; <span data-year>{{year}}</span> {{business.name}}</p>
+    </div>
+  </footer>
+{{{lightbox}}}
+  <script src="js/main.js" defer></script>
+</body>
+</html>
