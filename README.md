@@ -1,89 +1,89 @@
-# Salon Website
+# AAHairArtistry
 
-A single-page static site for a cosmetology business. Retro-futurist styling: Y2K chrome meets rock-and-punk salon. Plain HTML, CSS, and a small vanilla JS file. No build step, no framework, no backend. Booking is handled by Vagaro.
+One-page site for AAHairArtistry: hair by Adam Arledge, inside Ideation Spa, 1042 Broad Street, Camden, SC 29020. Plain HTML, CSS and a small vanilla JS file. No build step, no framework. Hosted on GitHub Pages from the `main` branch.
 
 ```
-index.html          the whole page
+index.html          page structure, hero copy, metadata
+js/content.js       ALL editable business content (booking link, contact, services, photos, reviews)
+js/main.js          builds the content-driven parts from content.js; mobile menu; photo viewer
 css/styles.css      all styles; design tokens at the top (:root)
-js/main.js          mobile menu, scroll fade-in, gallery lightbox
-js/hair.js          animated ASCII hair sweeping behind the hero title
-js/shapes.js        rotating ASCII versions of the Y2K shapes
-images/             gallery photos + social preview image (see images/README.md)
-assets/svg/         chrome shapes, sparkles, line illustrations, textures
+images/             social preview image; Adam's photos go in images/work/ (see images/README.md)
+assets/svg/         favicon
 ```
 
-## Fill in your details
+## Editing content
 
-Already filled in: business name (AAHairArtistry), stylist (Adam Arledge), studio (Ideation Spa, 1042 Broad Street, Camden, SC 29020), Instagram (@adamarledge), and the site URL (adamarledge.github.io). Search `index.html` for the remaining placeholders:
+Open `js/content.js`. Every field is commented. Fill in a value and it appears on the page; leave it empty and that piece is left off (no blank slots, no placeholder text). This includes:
 
-| Placeholder | Replace with |
-|---|---|
-| `[PHONE]` | Phone as displayed, e.g. `(555) 123-4567` |
-| `[PHONEDIGITS]` | Digits only, e.g. `5551234567` (for tap-to-call) |
-| `[EMAIL]` | Email address |
-| `[TIKTOK]` | TikTok handle without the `@` (or delete the TikTok links) |
-| Bracketed About paragraphs | Adam's bio |
-| `$[XX]` | Service prices (edit service names/descriptions too) |
-| `VAGARO_BOOKING_URL` | Your Vagaro booking link (appears on every Book button) |
-| `[Describe photo N]` | Alt text for each gallery photo |
+- **`booking.url`**: the Vagaro link. Until it's set, booking buttons lead to a short "message Adam on Instagram" panel instead of a broken link. Once it's set, every booking button opens Vagaro in a new tab and the copy switches to say so.
+- **`booking.consultationUrl`** (optional): a direct Vagaro link to the consultation service.
+- **`contact`**: phone, email, hours, visit notes (parking, entrance). Each one shows in the Visit section and is added to Google's business data.
+- **`services`**: per service, `price`, `duration`, `note` (booking requirement or what's included) and `bookingUrl` (only if Vagaro has a direct link to that service).
+- **`gallery`**: Adam's photos. The Work section and menu link appear once there is at least one.
+- **`about`**: bio paragraphs and a portrait.
+- **`reviews`**: real client reviews only. The section appears once one is added.
 
-Also update:
-- **Hours.** Edit them in two places: the Contact section *and* `openingHoursSpecification` in the JSON-LD block in `<head>`. Google reads the JSON-LD for search results.
-- **Tagline.** The hero uses the suggested line "Sharp cuts, loud color, zero boring." Change it in the hero and in the JSON-LD `description`.
+The hero headline, tagline and one-line description are written directly in `index.html` so they load instantly.
 
-### Vagaro embed instead of a button
+## Content still needed
 
-The Booking section uses a styled button by default. To embed Vagaro's widget instead, paste your Vagaro embed code inside `<div class="booking__embed">` (replacing the `VAGARO_EMBED_HTML` comment) and delete the button above it. The container shows only when it has content.
+The site shows only confirmed facts. These are missing:
 
-## Deploy to GitHub Pages
+| Content | Where it goes | Shows up in |
+|---|---|---|
+| Vagaro booking URL | `booking.url` | Every Book button, Services, Visit, first-visit steps |
+| Consultation link on Vagaro (optional) | `booking.consultationUrl` | "Book a consultation" buttons |
+| Starting prices per service | `services[].items[].price` | Services list |
+| Approximate durations | `services[].items[].duration` | Services list |
+| Consultation rules: which services require one; new-client rules; color corrections | `services[].items[].note` | Beside each affected service |
+| Whether vivids include lightening or it's booked separately | Vivid Color `note` | Services list |
+| Whether a root touch-up is a separate service from all-over color | New item in `services` | Services list |
+| Whether highlights and balayage are one booking or two | `services` | Services list |
+| What each service includes (e.g. wash, toner, gloss) | `description` / `note` | Services list |
+| Whether the consultation is free and how long it is | Consultation `price` / `duration` | Services list |
+| 4–6 photos of Adam's work, with descriptions | `gallery` + `images/work/` | Selected work section (hidden until added) |
+| A strong hero photo (optional) | `index.html` hero, see the comment there | Hero |
+| Portrait of Adam | `about.portrait` | Meet Adam |
+| Short bio: background, specialties, what an appointment is like | `about.paragraphs` | Meet Adam |
+| Phone and/or email (only if Adam wants them public) | `contact` | Visit section, Google data |
+| Hours or "by appointment only" wording | `contact.hours` | Visit section, Google data |
+| Parking, entrance or accessibility details | `contact.visitNotes` | Visit section |
+| Client reviews with permission and source | `reviews` | Reviews section (hidden until added) |
+| TikTok or other social accounts, if any | `social` | Footer, Google data |
 
-1. **Create a GitHub repository.** Name it `<username>.github.io` for a root site (`https://<username>.github.io/`), or use any name for a project site (`https://<username>.github.io/<repo>/`).
-2. **Upload or push the files.** Either drag the files into the repo on github.com ("Add file → Upload files"), or:
-   ```bash
-   git init && git add . && git commit -m "Initial site"
-   git branch -M main
-   git remote add origin https://github.com/<username>/<repo>.git
-   git push -u origin main
-   ```
-3. **Turn on Pages.** In the repository go to **Settings → Pages**. Under "Build and deployment", set Source to **Deploy from a branch**, branch **main**, folder **/ (root)**, then Save.
-4. **Wait a minute,** then visit the published URL shown at the top of the Pages settings.
-5. **Custom domain (optional).** Enter your domain in Settings → Pages → Custom domain, then add the DNS records from GitHub's guide: [Managing a custom domain for your GitHub Pages site](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site). Tick **Enforce HTTPS** once it's available. If you use a custom domain, update the `adamarledge.github.io` URLs in `<head>` to match.
+To check: a public directory lists the business at 1042 Broad Street as **"Ideation Professionals"**, not "Ideation Spa". If the spa has changed its name, update the studio name everywhere it appears in `index.html`.
 
-All paths are relative, so the site works as either a root or a project site without changes.
+## Design system
+
+**Direction:** editorial punk. Warm ivory paper, near-black ink, one cobalt accent, bold condensed display type, and one recurring four-point sparkle. The hair photography should carry the visual interest; the layout stays out of its way.
+
+**Fonts** (Google Fonts): Anton for the wordmark and section headings, DM Sans for body and interface text, Instrument Serif Italic as a sparing accent (the tagline, the Meet Adam intro, review quotes).
+
+**Tokens** live at the top of `css/styles.css`: color, type scale, spacing (8 / 16 / 24 / 32 / 48 / 64 / 96), one image radius (6px), one button radius (4px).
+
+**Color roles and contrast (WCAG AA):**
+
+| Pair | Ratio | Use |
+|---|---|---|
+| Ink `#171715` on ivory `#F2EFE8` | 15.6 | Body text, headings |
+| Muted `#5C5A54` on ivory / stone | 6.0 / 5.2 | Secondary text |
+| White on cobalt `#3755EE` | 5.7 | Primary button labels |
+| Cobalt on ivory | 4.95 | Links, step numbers |
+| Cobalt on stone `#E4DFD3` | 4.3 ❌ | Not used as text; links on stone are ink with a cobalt underline |
+| Ivory on ink | 15.6 | Visit section text |
+| `#9DADFF` on ink | 8.4 | Links and focus rings on the dark section |
+| Cobalt against ink | 3.2 | Primary button edge on dark (meets the 3:1 rule for controls) |
+
+**Components:** primary button (cobalt fill), secondary button (ink outline), text link with arrow, the booking panel, service rows, numbered steps, and the photo viewer (keyboard arrows, Escape, visible Previous/Next/Close, focus returns to the photo that opened it).
+
+**Motion:** only small hover transitions. Everything is off when the visitor's device asks for reduced motion.
 
 ## Preview locally
 
-Opening `index.html` directly works. For a closer match to GitHub Pages, run a tiny server from this folder:
 ```bash
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
-## Design notes
+## Deploy
 
-**Fonts** (Google Fonts): Unbounded (headlines), DM Serif Display Italic (taglines, service names), DM Sans (body), Space Mono (prices, hours). To swap one, change the `<link>` in `<head>` and the matching `--font-*` variable in `css/styles.css`.
-
-**Contrast rules followed (WCAG AA, 4.5:1 for body text):**
-
-| Pair | Ratio | Use |
-|---|---|---|
-| Off-white on near-black | 14.3 | ✅ main dark text |
-| Near-black on off-white | 14.3 | ✅ main light text |
-| Stone on charcoal | 8.3 | ✅ secondary text on dark |
-| Sage on near-black | 5.4 | ✅ prices |
-| Near-black on sage | 5.4 | ✅ if you put text on sage |
-| White on electric blue | 5.1 | ✅ button labels |
-| Off-white on sage | 2.6 | ❌ avoid |
-| Off-white on taupe | 2.4 | ❌ avoid |
-| Electric blue as text (dark or light bg) | 3.6–3.9 | ❌ blue is used only as a fill, underline, or decoration |
-
-**Y2K shapes:** a library of 17 shapes (sparkles, 8-point stars, bursts, orbit rings, comets, shooting stars, a wire globe, swooshes, Saturn, a checker strip and more) is defined once as SVG `<symbol>`s inside `index.html`, ids `shape-...`. Place one anywhere with:
-
-```html
-<svg class="deco deco--chrome spin" style="--x:80%;--y:20%;--s:60px;" viewBox="0 0 100 100"><use href="#shape-orbit"/></svg>
-```
-
-`--x`/`--y` set the center point (as a % of the section) and `--s` the size. Use `deco--chrome` on dark sections and `deco--ink` on light ones. For motion add `spin`, `spin-slow`, `spin-rev`, `flip` (turns like a coin), `flip-slow`, `tw` (twinkle) or `drift`. Add `deco--wide` to hide a shape on phones. For an ASCII version use `<canvas class="deco ascii-shape" style="..." data-shape="star8" data-motion="spin|flip" data-tone="dark|light">`. `js/shapes.js` redraws it as characters every frame, so the shape turns while the letters stay upright.
-
-**Motion:** Fade-in on scroll, chrome sparkle twinkle, and hover lifts. All of it is disabled when the visitor's device has "reduce motion" turned on.
-
-**Hero ASCII hair (`js/hair.js`):** long wavy locks of hair, drawn as text characters on a `<canvas>`, sweep in from the left behind "AAHairArtistry" and fan out across the hero. Each strand is shaped by two *travelling sine waves* that roll from root to tip, plus a slow noise drift in amplitude, so the motion is smooth and never repeats exactly. Strands in a lock share a wave phase, so locks move together and cross over each other. Characters follow the hair's direction (`- / \`), with denser ones (`* # % @`) where locks cross. Hair behind the eyebrow, title and tagline is dimmed, so the text stays readable and the hair reads as depth. It pauses when off-screen or in a background tab, runs at 20fps on phones, and shows a still frame with "reduce motion" on. To tune it, edit `band` in `layout()` (`amp` = wave height, `root`/`tip` = how much it fans out, `slope` = angle of the sweep), the wavelengths in `strandY()`, and `PALETTES` (colors).
+GitHub Pages publishes the `main` branch (Settings → Pages → Deploy from a branch → `main`, `/ (root)`). Merge a pull request into `main` and the site updates within a minute or two. All paths are relative, so the site also works as a project site or on a custom domain; if you add a custom domain, update the `adamarledge.github.io` URLs in `<head>`.

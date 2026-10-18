@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="#3B5BFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="Ladybug line illustration">
-  <ellipse cx="50" cy="58" rx="28" ry="32"/>
-  <path d="M50 26v64"/>
-  <path d="M36 30c4-10 24-10 28 0"/>
-  <path d="M42 22 34 10M58 22l8-12"/>
-  <circle cx="38" cy="50" r="4"/><circle cx="62" cy="50" r="4"/>
-  <circle cx="36" cy="70" r="4"/><circle cx="64" cy="70" r="4"/>
-  <path d="M22 48 10 42M22 64 8 66M78 48l12-6M78 64l14 2"/>
-</svg>

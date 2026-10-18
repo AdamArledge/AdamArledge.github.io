@@ -1,21 +1,18 @@
-# Images to supply
+# Images
 
-Replace the placeholder files in this folder with real photos, **keeping the same filenames** (or update the paths in `index.html`).
+| File | Used for |
+|---|---|
+| `og-image.jpg` | Link preview on iMessage, Instagram, Facebook and similar apps (1200 × 630). A typographic card; swap in a hero photo later if you like, keeping the size exactly 1200 × 630. |
 
-| File | Used for | Suggested size | Notes |
-|---|---|---|---|
-| `gallery-1.jpg` | Gallery tile (tall) | 800 × 1200 | Portrait. Great for a full-length cut or long color. |
-| `gallery-2.jpg` | Gallery tile | 800 × 800 | Wide on tablet; any crop works. |
-| `gallery-3.jpg` | Gallery tile (wide/large) | 1200 × 800 | Your strongest shot. It's the biggest tile on tablet. |
-| `gallery-4.jpg` | Gallery tile | 800 × 800 | Square. |
-| `gallery-5.jpg` | Gallery tile (tall) | 800 × 1200 | Portrait. |
-| `gallery-6.jpg` | Gallery tile (wide) | 1200 × 800 | Landscape. |
-| `og-image.jpg` | Link preview on Instagram/iMessage/Facebook | 1200 × 630 | Logo or hero photo. Must stay exactly this ratio. |
+## Adding Adam's work
 
-Tiles crop with `object-fit: cover`, so the subject should sit near the center.
+1. Make a folder `images/work/` and put 4–6 of Adam's own photos in it.
+2. Add each one to the `gallery` list in `js/content.js` (see the example there). The "Selected work" section and its menu link appear automatically.
 
-## Compression
+Tips:
+- **Portrait photos** (3:4 or 4:5) work best; the grid crops every tile to 4:5 from the center, so keep the hair in the middle of the frame.
+- **About 900 × 1200 pixels, under ~250 KB each.** Phone photos are often 3–6 MB; run them through [squoosh.app](https://squoosh.app) (JPEG or WebP, quality 75).
+- **No filters that change the color.** The color is the work.
+- **Alt text** describes the hair, e.g. "Shoulder-length copper shag with curtain bangs, seen from the side". **Caption** (optional) is a short label shown under the photo.
 
-Aim for **under ~250 KB per photo**. Export as JPEG at quality 70–80, or run the photos through [squoosh.app](https://squoosh.app) (free, in-browser). Phone photos straight off the camera are often 3–6 MB, which would make the page slow on mobile data.
-
-After replacing each photo, update its `alt="[Describe photo N]"` text in `index.html` with a short description, e.g. `alt="Copper shag with curtain bangs"`. Screen readers read this aloud, and Google uses it for image search.
+A portrait of Adam goes in the same way, through `about.portrait` in `js/content.js`.
