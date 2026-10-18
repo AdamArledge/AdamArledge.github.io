@@ -1,11 +1,12 @@
 <!doctype html>
+<!-- GENERATED FILE: edit templates/index.html or content/site.mjs, then run `node scripts/build.mjs`. -->
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>AAHairArtistry | Hair by Adam Arledge in Camden, SC</title>
-  <meta name="description" content="Sharp cuts, loud color, zero boring. Haircuts, color, highlights, balayage, and vivid color by Adam Arledge, inside Ideation Spa in Camden, SC.">
+  <meta name="description" content="Sharp cuts, loud color, zero boring. Haircuts, color, highlights and balayage, and vivid color by Adam Arledge, inside Ideation Spa in Camden, SC.">
   <meta name="theme-color" content="#F2EFE8">
   <link rel="canonical" href="https://adamarledge.github.io/">
 
@@ -23,21 +24,20 @@
 
   <link rel="icon" href="assets/svg/favicon.svg" type="image/svg+xml">
 
-  <!-- Fonts: Anton (display), DM Sans (body and interface), Instrument Serif Italic (tagline accent) -->
+  <!-- Fonts: Anton (display), DM Sans (body and interface), Instrument Serif Italic (accent) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
 
-  <!-- Business details for search engines. Only confirmed facts; js/main.js adds
-       phone, email, hours and social links from js/content.js when they are filled in. -->
-  <script type="application/ld+json" id="business-jsonld">
+  <!-- Business details for search engines, generated from content/site.mjs -->
+  <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "HairSalon",
     "name": "AAHairArtistry",
-    "description": "Sharp cuts, loud color, zero boring. Haircuts, color, highlights, balayage, and vivid color by Adam Arledge, inside Ideation Spa in Camden, SC.",
+    "description": "Sharp cuts, loud color, zero boring. Haircuts, color, highlights and balayage, and vivid color by Adam Arledge.",
     "url": "https://adamarledge.github.io/",
     "image": "https://adamarledge.github.io/images/og-image.jpg",
     "address": {
@@ -48,8 +48,18 @@
       "postalCode": "29020",
       "addressCountry": "US"
     },
-    "containedInPlace": { "@type": "Place", "name": "Ideation Spa" },
-    "sameAs": ["https://www.instagram.com/adamarledge/"]
+    "containedInPlace": {
+      "@type": "Place",
+      "name": "Ideation Spa"
+    },
+    "potentialAction": {
+      "@type": "ReserveAction",
+      "target": "https://www.vagaro.com/ideationpros/book-now"
+    },
+    "sameAs": [
+      "https://www.instagram.com/adamarledge/",
+      "https://linktr.ee/AAHairArtistry"
+    ]
   }
   </script>
 </head>
@@ -60,6 +70,10 @@
   <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
     <symbol id="sparkle" viewBox="0 0 100 100">
       <path d="M50 0C52.6 34 66 47.4 100 50 66 52.6 52.6 66 50 100 47.4 66 34 52.6 0 50 34 47.4 47.4 34 50 0Z" fill="currentColor"/>
+    </symbol>
+    <!-- "Opens in a new tab" arrow used on booking buttons -->
+    <symbol id="icon-new-tab" viewBox="0 0 16 16">
+      <path d="M6 3.5h6.5V10M12.5 3.5 3.5 12.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"/>
     </symbol>
   </svg>
 
@@ -76,59 +90,38 @@
           <span class="nav__toggle-label">Menu</span>
         </button>
         <ul class="nav__menu" id="nav-menu">
-          <li data-requires="gallery" hidden><a href="#work">Work</a></li>
           <li><a href="#services">Services</a></li>
           <li><a href="#about">About</a></li>
-          <li data-requires="reviews" hidden><a href="#reviews">Reviews</a></li>
           <li><a href="#visit">Visit</a></li>
         </ul>
       </nav>
 
-      <a class="btn btn--primary btn--sm site-header__book" href="#book" data-book="general" data-label-online="Book">Book</a>
+      <a class="btn btn--primary btn--sm site-header__book" href="https://www.vagaro.com/ideationpros/book-now" target="_blank" rel="noopener"><span>Book<span class="site-header__book-more"> an appointment</span></span><span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
     </div>
   </header>
 
   <main id="main">
 
     <!-- ================= HERO =================
-         Typography-led until a real photo is available. To add one, uncomment the
-         <figure class="hero__photo"> below and add the class "hero--photo" to the section. -->
+         Typography-led until a real photo is available. To add one, put a
+         <figure class="hero__photo"><img ...></figure> after .hero__body and add
+         the class "hero--photo" to the section. -->
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="container hero__inner">
         <p class="hero__place"><span>Camden, SC</span><span class="hero__dot" aria-hidden="true">&middot;</span><span>Inside Ideation Spa</span></p>
 
-        <h1 class="hero__title" id="hero-title">
-          <span class="hero__title-a">AAHair</span><span class="hero__title-b">Artistry</span><svg class="hero__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg>
-        </h1>
+        <h1 class="hero__title" id="hero-title"><span class="hero__title-a">AAHair</span><span class="hero__title-b">Artistry</span><svg class="hero__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg></h1>
 
         <div class="hero__body">
           <p class="hero__tagline"><span>Sharp cuts,</span> <span>loud color,</span> <span>zero boring.</span></p>
           <div class="hero__detail">
-            <p class="hero__summary">Haircuts, color, highlights and balayage, and vivid color by Adam&nbsp;Arledge.</p>
+            <p class="hero__summary">Haircuts, color, highlights and balayage, and vivid color by Adam Arledge.</p>
             <div class="actions">
-              <a class="btn btn--primary" href="#book" data-book="general" data-label-online="Book on Vagaro">Book an appointment</a>
+              <a class="btn btn--primary" href="https://www.vagaro.com/ideationpros/book-now" target="_blank" rel="noopener">Book an appointment<span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
               <a class="link-arrow" href="#services">View services<span class="link-arrow__icon" aria-hidden="true">&rarr;</span></a>
             </div>
           </div>
         </div>
-
-        <!--
-        <figure class="hero__photo">
-          <img src="images/work/hero.jpg" width="900" height="1200" alt="Describe the cut and color in the photo" fetchpriority="high">
-        </figure>
-        -->
-      </div>
-    </section>
-
-    <!-- ================= SELECTED WORK =================
-         Built from the "gallery" list in js/content.js. Stays hidden until photos are added. -->
-    <section class="section work" id="work" aria-labelledby="work-title" data-requires="gallery" hidden>
-      <div class="container">
-        <div class="section-head">
-          <h2 class="section-title" id="work-title">Selected work</h2>
-          <p class="section-head__aside">More on Instagram: <a href="https://www.instagram.com/adamarledge/" data-social-link>@adamarledge</a></p>
-        </div>
-        <ul class="work-grid" data-gallery></ul>
       </div>
     </section>
 
@@ -137,20 +130,67 @@
       <div class="container services__layout">
         <div class="services__intro">
           <h2 class="section-title" id="services-title">Services</h2>
-          <p class="services__lede" data-online hidden>Booking is on Vagaro, where you pick the service and see current prices and open times.</p>
-          <p class="services__lede" data-offline>Prices aren&rsquo;t listed here yet. Ask Adam on Instagram for current pricing.</p>
-          <div class="services__consult">
-            <p class="services__consult-title">Not sure what to book?</p>
-            <p>Start with a consultation to plan a cut or color change before committing to it.</p>
-          </div>
+          <p class="services__lede">Prices aren’t listed on this site yet. Book online through Vagaro.</p>
           <div class="actions">
-            <a class="btn btn--primary" href="#book" data-book="general" data-label-online="Book on Vagaro">Book an appointment</a>
-            <a class="btn btn--secondary" href="#book" data-book="consult" data-label-online="Book a consultation" data-online hidden>Book a consultation</a>
+            <a class="btn btn--primary" href="https://www.vagaro.com/ideationpros/book-now" target="_blank" rel="noopener">Book an appointment<span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
+
           </div>
+          <p class="fine-print">Booking opens Vagaro in a new tab.</p>
         </div>
 
-        <div class="services__list" data-services>
-          <noscript><p>Services: Cut &amp; Style, Blowout, All-over Color, Highlights &amp; Balayage, Vivid Color, and Consultation.</p></noscript>
+        <div class="services__list">
+          <div class="service-group" role="group" aria-labelledby="service-group-1">
+            <h3 class="service-group__title" id="service-group-1">Cuts &amp; styling</h3>
+            <ul class="service-list">
+              <li class="service">
+                <div class="service__text">
+                  <h4 class="service__name">Cut &amp; Style</h4>
+                  <p class="service__desc">A haircut, finished and styled.</p>
+                </div>
+              </li>
+              <li class="service">
+                <div class="service__text">
+                  <h4 class="service__name">Blowout</h4>
+                  <p class="service__desc">A blow-dry style, no cut.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="service-group" role="group" aria-labelledby="service-group-2">
+            <h3 class="service-group__title" id="service-group-2">Color</h3>
+            <ul class="service-list">
+              <li class="service">
+                <div class="service__text">
+                  <h4 class="service__name">All-over Color</h4>
+                  <p class="service__aka">Also called single-process color</p>
+                  <p class="service__desc">One color applied from roots to ends.</p>
+                </div>
+              </li>
+              <li class="service">
+                <div class="service__text">
+                  <h4 class="service__name">Highlights &amp; Balayage</h4>
+                  <p class="service__desc">Lighter pieces for dimension, foiled or hand-painted.</p>
+                </div>
+              </li>
+              <li class="service">
+                <div class="service__text">
+                  <h4 class="service__name">Vivid Color</h4>
+                  <p class="service__desc">Fashion shades: electric blues, punk pinks and the rest of the loud end.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="service-group" role="group" aria-labelledby="service-group-3">
+            <h3 class="service-group__title" id="service-group-3">Planning</h3>
+            <ul class="service-list">
+              <li class="service">
+                <div class="service__text">
+                  <h4 class="service__name">Consultation</h4>
+                  <p class="service__desc">A conversation about a cut or color change before the appointment itself.</p>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
     </section>
@@ -161,41 +201,10 @@
         <h2 class="section-title" id="about-title">Meet Adam</h2>
         <div class="about__body">
           <p class="about__lede">Adam Arledge is the stylist behind AAHairArtistry, taking clients inside Ideation Spa on Broad Street in Camden.</p>
-          <div class="about__more" data-about></div>
-          <p>Recent cuts and color are on Instagram at <a href="https://www.instagram.com/adamarledge/" data-social-link>@adamarledge</a>.</p>
+
+          <p>Follow Adam on Instagram at <a href="https://www.instagram.com/adamarledge/" target="_blank" rel="noopener">@adamarledge<span class="visually-hidden"> (opens in a new tab)</span></a>.</p>
         </div>
-        <figure class="about__portrait" data-portrait hidden></figure>
-      </div>
-    </section>
 
-    <!-- ================= REVIEWS =================
-         Built from the "reviews" list in js/content.js. Stays hidden until real reviews are added. -->
-    <section class="section reviews" id="reviews" aria-labelledby="reviews-title" data-requires="reviews" hidden>
-      <div class="container">
-        <h2 class="section-title" id="reviews-title">From clients</h2>
-        <ul class="review-list" data-reviews></ul>
-      </div>
-    </section>
-
-    <!-- ================= FIRST VISIT ================= -->
-    <section class="section first-visit" aria-labelledby="first-visit-title">
-      <div class="container">
-        <h2 class="section-title" id="first-visit-title">Your first visit</h2>
-        <ol class="steps">
-          <li class="step">
-            <h3 class="step__title">Pick a service</h3>
-            <p>Choose from the services above. Planning a big change, or unsure? Book a consultation first.</p>
-          </li>
-          <li class="step">
-            <h3 class="step__title">Book your time</h3>
-            <p data-online hidden>Booking opens Vagaro in a new tab, where you choose a day and time.</p>
-            <p data-offline>Online booking isn&rsquo;t linked here yet. Message Adam on <a href="https://www.instagram.com/adamarledge/" data-social-link>Instagram</a> to set up a time.</p>
-          </li>
-          <li class="step">
-            <h3 class="step__title">Find the studio</h3>
-            <p>AAHairArtistry is inside Ideation Spa at 1042 Broad Street. Bring photos of hair you love, and any you don&rsquo;t.</p>
-          </li>
-        </ol>
       </div>
     </section>
 
@@ -209,29 +218,22 @@
             1042 Broad Street<br>
             Camden, SC 29020
           </address>
-          <p><a class="link-arrow link-arrow--light" href="https://www.google.com/maps/search/?api=1&amp;query=1042+Broad+Street+Camden+SC+29020" target="_blank" rel="noopener">Get directions<span class="visually-hidden"> (opens Google Maps in a new tab)</span><span class="link-arrow__icon" aria-hidden="true">&rarr;</span></a></p>
-          <div class="visit__extra" data-contact></div>
+          <ul class="visit__links">
+            <li><a class="link-arrow link-arrow--light" href="https://www.google.com/maps/search/?api=1&amp;query=1042+Broad+Street+Camden+SC+29020" target="_blank" rel="noopener">Get directions<span class="visually-hidden"> (opens Google Maps in a new tab)</span><span class="link-arrow__icon" aria-hidden="true">&rarr;</span></a></li>
+            <li><a class="link-arrow link-arrow--light" href="https://linktr.ee/AAHairArtistry" target="_blank" rel="noopener">More links on Linktree<span class="link-arrow__icon" aria-hidden="true">&rarr;</span><span class="visually-hidden"> (opens in a new tab)</span></a></li>
+          </ul>
+
         </div>
 
-        <div class="book-panel" id="book" tabindex="-1">
+        <div class="book-panel" id="book">
           <svg class="book-panel__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg>
-          <h3 class="book-panel__title" id="book-title">Book an appointment</h3>
+          <h3 class="book-panel__title">Book an appointment</h3>
+          <p>Appointments are booked online through Vagaro.</p>
+          <div class="actions">
+            <a class="btn btn--primary" href="https://www.vagaro.com/ideationpros/book-now" target="_blank" rel="noopener">Book an appointment<span class="visually-hidden"> (opens Vagaro in a new tab)</span><svg class="icon-new-tab" viewBox="0 0 16 16" aria-hidden="true"><use href="#icon-new-tab"/></svg></a>
 
-          <div data-online hidden>
-            <p>Booking happens on Vagaro. Choose your service there to see current prices and open times.</p>
-            <div class="actions">
-              <a class="btn btn--primary" href="#book" data-book="general" data-label-online="Book on Vagaro">Book on Vagaro</a>
-              <a class="btn btn--secondary btn--on-ink" href="#book" data-book="consult" data-label-online="Book a consultation">Book a consultation</a>
-            </div>
-            <p class="book-panel__fine" data-consult-hint>Both open Vagaro in a new tab. For a consultation, choose &ldquo;Consultation&rdquo; there.</p>
           </div>
-
-          <div data-offline>
-            <p>Online booking isn&rsquo;t linked here yet. Message Adam on Instagram to set up an appointment or a consultation.</p>
-            <div class="actions">
-              <a class="btn btn--primary" href="https://www.instagram.com/adamarledge/" data-social-link target="_blank" rel="noopener">Message on Instagram<span class="visually-hidden"> (opens in a new tab)</span></a>
-            </div>
-          </div>
+          <p class="fine-print">Opens Vagaro in a new tab.</p>
         </div>
       </div>
     </section>
@@ -242,33 +244,14 @@
     <div class="container site-footer__inner">
       <p class="wordmark wordmark--footer">AAHairArtistry<svg class="wordmark__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg></p>
       <p class="site-footer__place">Inside Ideation Spa &middot; 1042 Broad Street, Camden, SC 29020</p>
-      <ul class="site-footer__links" data-social-list>
+      <ul class="site-footer__links">
         <li><a href="https://www.instagram.com/adamarledge/" target="_blank" rel="noopener">Instagram @adamarledge<span class="visually-hidden"> (opens in a new tab)</span></a></li>
+        <li><a href="https://linktr.ee/AAHairArtistry" target="_blank" rel="noopener">More links on Linktree<span class="visually-hidden"> (opens in a new tab)</span></a></li>
       </ul>
       <p class="site-footer__copy">&copy; <span data-year>2026</span> AAHairArtistry</p>
     </div>
   </footer>
 
-  <!-- ================= PHOTO VIEWER (used by Selected work) ================= -->
-  <dialog class="lightbox" aria-labelledby="lightbox-title">
-    <div class="lightbox__frame">
-      <h2 class="visually-hidden" id="lightbox-title">Photo viewer</h2>
-      <figure class="lightbox__figure">
-        <img class="lightbox__img" src="data:," alt="">
-        <figcaption class="lightbox__caption"></figcaption>
-      </figure>
-      <div class="lightbox__bar">
-        <p class="lightbox__count" aria-live="polite"></p>
-        <div class="lightbox__controls">
-          <button class="lightbox__btn" type="button" data-step="-1"><span aria-hidden="true">&larr;</span> Previous</button>
-          <button class="lightbox__btn" type="button" data-step="1">Next <span aria-hidden="true">&rarr;</span></button>
-          <button class="lightbox__btn lightbox__btn--close" type="button" data-close>Close</button>
-        </div>
-      </div>
-    </div>
-  </dialog>
-
-  <script src="js/content.js" defer></script>
   <script src="js/main.js" defer></script>
 </body>
 </html>

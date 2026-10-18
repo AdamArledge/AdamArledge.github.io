@@ -152,7 +152,8 @@ a:hover { text-decoration-thickness: 2px; }
   justify-content: center;
   gap: var(--s1);
   min-height: 3rem;                  /* 48px touch target */
-  padding: 0.75rem 1.5rem;
+  /* side padding is capped by the screen width so big text still fits narrow phones */
+  padding: 0.75rem min(1.5rem, 6vw);
   border: var(--border) solid transparent;
   border-radius: var(--radius-btn);
   font: 700 1rem/1.2 var(--font-body);
@@ -160,6 +161,7 @@ a:hover { text-decoration-thickness: 2px; }
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  max-width: 100%;
   transition: background-color var(--ease), color var(--ease), border-color var(--ease);
 }
 .btn--primary { background: var(--cobalt); color: var(--white); }
@@ -171,6 +173,7 @@ a:hover { text-decoration-thickness: 2px; }
 .btn--secondary:active { background: var(--cobalt-deep); border-color: var(--cobalt-deep); color: var(--white); }
 
 .btn--sm { min-height: 2.75rem; padding: 0.5rem 1rem; font-size: 0.9375rem; }
+.icon-new-tab { width: 0.8em; height: 0.8em; flex: none; }
 
 .btn[aria-disabled="true"], .btn:disabled {
   background: var(--stone); color: var(--ink-muted); border-color: transparent; cursor: not-allowed;
@@ -194,6 +197,8 @@ a:hover { text-decoration-thickness: 2px; }
 .link-arrow--light { color: var(--on-ink); text-decoration-color: var(--on-ink-link); }
 .section--ink a.link-arrow--light { color: var(--on-ink); }
 .link-arrow--light:hover, .section--ink a.link-arrow--light:hover { color: var(--on-ink-link); }
+
+.fine-print { font-size: var(--text-sm); color: var(--ink-muted); }
 
 .actions {
   display: flex;
@@ -230,8 +235,15 @@ a:hover { text-decoration-thickness: 2px; }
   background: var(--ivory);
   border-bottom: 1px solid var(--rule);
 }
+/* Short screens (landscape phones) or large text settings: em here follows the
+   browser's text size, so the header stops sticking when it would eat the screen */
+@media (max-height: 30em) {
+  .site-header { position: relative; }
+  html { scroll-padding-top: var(--s2); }
+}
 .site-header__bar {
   display: flex;
+  flex-wrap: wrap;            /* with very large text, Book and Menu drop to a second row instead of overflowing */
   align-items: center;
   gap: var(--s2);
   min-height: var(--header-h);
@@ -239,6 +251,8 @@ a:hover { text-decoration-thickness: 2px; }
 .site-header .wordmark { margin-right: auto; padding-block: var(--s1); }
 /* Phones: wordmark · Book · Menu */
 .site-header__book { order: 2; }
+/* Phones show "Book"; the full "Book an appointment" returns once there is room */
+.site-header__book-more { display: none; }
 .nav { order: 3; }
 
 .nav__toggle {
@@ -303,6 +317,8 @@ a:hover { text-decoration-thickness: 2px; }
 @media (max-width: 22.4em) {
   .nav__toggle-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .nav__toggle { min-width: 2.75rem; justify-content: center; }
+  .site-header__bar { gap: var(--s1); }
+  .site-header__book .icon-new-tab { display: none; }
 }
 
 /* Without JavaScript the toggle can't work, so the links sit in a row under the bar */
@@ -314,6 +330,7 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 @media (min-width: 56.25em) {
   .site-header__bar { gap: var(--s4); }
   .nav, .site-header__book { order: 0; }
+  .site-header__book-more { display: inline; }
   .nav__toggle { display: none; }
   .nav__menu,
   .nav__menu.is-open {
@@ -339,8 +356,8 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 }
 
 /* ---------- Hero ---------- */
-.hero { padding-block: var(--s4) var(--s6); }
-.hero__inner { display: grid; gap: var(--s3); }
+.hero { padding-block: var(--s3) var(--s5); }
+.hero__inner { display: grid; gap: var(--s2); }
 
 .hero__place {
   font-size: var(--text-sm);
@@ -359,9 +376,9 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   align-items: flex-start;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: min(calc((100vw - 2 * var(--gutter)) * 0.3), 9rem);
+  font-size: min(calc((100vw - 2 * var(--gutter)) * 0.26), 8rem);
   line-height: 0.96;
-  padding-bottom: var(--s3);
+  padding-bottom: var(--s2);
   border-bottom: var(--border) solid var(--rule-strong);
 }
 .hero__title-a { flex-basis: 100%; }
@@ -373,17 +390,18 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   flex: none;
 }
 
-.hero__body { display: grid; gap: var(--s4); }
+.hero__body { display: grid; gap: var(--s3); padding-top: var(--s1); }
 .hero__tagline {
   font-family: var(--font-accent);
   font-style: italic;
-  font-size: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
   line-height: 1;
   letter-spacing: -0.01em;
 }
 /* Break only at the commas */
 .hero__tagline span { display: inline-block; }
-.hero__detail { display: grid; gap: var(--s3); align-content: start; }
+.hero__detail { display: grid; gap: var(--s2); align-content: start; }
+.hero__detail .actions { margin-top: var(--s1); }
 .hero__summary { font-size: var(--text-lg); max-width: 32ch; }
 
 @media (max-width: 26em) {
@@ -396,14 +414,14 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 @media (min-width: 40em) {
   .hero__title {
     flex-wrap: nowrap;
-    font-size: min(calc((100vw - 2 * var(--gutter)) * 0.148), 12.5rem);
+    font-size: min(calc((100vw - 2 * var(--gutter)) * 0.148), 10.5rem);
     line-height: 0.9;
   }
   .hero__title-a { flex-basis: auto; }
 }
 @media (min-width: 56.25em) {
-  .hero { padding-block: var(--s6) var(--s7); }
-  .hero__inner { gap: var(--s4); }
+  .hero { padding-block: var(--s5) var(--s6); }
+  .hero__inner { gap: var(--s3); }
   .hero__body {
     grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
     gap: var(--s5);
@@ -478,12 +496,6 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 .services__layout { display: grid; gap: var(--s5); }
 .services__intro { display: grid; gap: var(--s3); align-content: start; }
 .services__lede { font-size: var(--text-lg); max-width: 34ch; }
-.services__consult {
-  padding-left: var(--s2);
-  border-left: 3px solid var(--cobalt);
-  max-width: 36ch;
-}
-.services__consult-title { font-weight: 700; }
 
 .service-group + .service-group { margin-top: var(--s5); }
 .service-group__title {
@@ -594,13 +606,12 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   mask-image: linear-gradient(215deg, #000 0%, transparent 60%);
   pointer-events: none;
 }
-.visit__layout { position: relative; display: grid; gap: var(--s5); }
+.visit__layout { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--s5); }
 .visit__info { display: grid; gap: var(--s2); align-content: start; }
 .visit__info .section-title { margin-bottom: var(--s1); }
 .visit__studio, .visit__address { font-size: var(--text-lg); }
 .visit__address { line-height: 1.5; }
-.visit__extra { display: grid; gap: var(--s2); }
-.visit__extra:empty { display: none; }
+.visit__links { display: flex; flex-wrap: wrap; gap: 0 var(--s4); }
 .visit__label {
   margin-top: var(--s2);
   font-size: var(--text-sm);
@@ -618,6 +629,7 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 .book-panel {
   position: relative;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--s3);
   align-content: start;
   padding: var(--s4) var(--s3);
@@ -625,8 +637,6 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   color: var(--ink);
   border-radius: var(--radius);
 }
-.book-panel:focus { outline: none; }
-.book-panel > div { display: grid; gap: var(--s3); }
 .book-panel p { max-width: 46ch; }
 .section--ink .book-panel a:not(.btn) { color: var(--cobalt); }
 .section--ink .book-panel :focus-visible { outline-color: var(--focus); }
@@ -646,8 +656,14 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   height: 2.25rem;
   color: var(--cobalt);
 }
-.book-panel__fine { font-size: var(--text-sm); color: var(--ink-muted); }
+.book-panel .fine-print { color: var(--ink-muted); }
 
+/* Phones: the sparkle gives its space back to the heading */
+@media (max-width: 39.99em) {
+  .book-panel { padding: var(--s3) var(--s2); }
+  .book-panel__title { padding-right: 0; }
+  .book-panel__spark { display: none; }
+}
 @media (min-width: 40em) {
   .book-panel { padding: var(--s5); }
   .book-panel__spark { top: var(--s5); right: var(--s5); }
@@ -695,6 +711,8 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   color: var(--on-ink);
 }
 .lightbox::backdrop { background: rgba(10, 10, 9, 0.88); }
+/* The page behind an open viewer is inert (showModal); this also stops it scrolling */
+html:has(.lightbox[open]) { overflow: hidden; }
 .lightbox__frame { display: grid; gap: var(--s2); padding: var(--s2); }
 .lightbox__figure { display: grid; gap: var(--s1); }
 .lightbox__frame { min-width: min(22rem, 100%); }

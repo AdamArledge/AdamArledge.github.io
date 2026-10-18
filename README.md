@@ -1,89 +1,99 @@
 # AAHairArtistry
 
-One-page site for AAHairArtistry: hair by Adam Arledge, inside Ideation Spa, 1042 Broad Street, Camden, SC 29020. Plain HTML, CSS and a small vanilla JS file. No build step, no framework. Hosted on GitHub Pages from the `main` branch.
+One-page site for AAHairArtistry: hair by Adam Arledge, inside Ideation Spa, 1042 Broad Street, Camden, SC 29020. Static HTML and CSS with a small vanilla JS file, hosted on GitHub Pages from the `main` branch.
 
 ```
-index.html          page structure, hero copy, metadata
-js/content.js       ALL editable business content (booking link, contact, services, photos, reviews)
-js/main.js          builds the content-driven parts from content.js; mobile menu; photo viewer
-css/styles.css      all styles; design tokens at the top (:root)
-images/             social preview image; Adam's photos go in images/work/ (see images/README.md)
-assets/svg/         favicon
+content/site.mjs      ALL editable business content (booking, services, links, photos, reviews)
+templates/index.html  page layout and fixed copy, with {{ }} slots filled from site.mjs
+scripts/build.mjs     writes index.html from the two files above (no dependencies)
+index.html            GENERATED: what GitHub Pages serves. Don't edit it by hand.
+css/styles.css        all styles; design tokens at the top (:root)
+js/main.js            mobile menu and photo viewer
+images/               social preview image; Adam's photos go in images/work/ (see images/README.md)
+assets/svg/           favicon
 ```
 
 ## Editing content
 
-Open `js/content.js`. Every field is commented. Fill in a value and it appears on the page; leave it empty and that piece is left off (no blank slots, no placeholder text). This includes:
+1. Edit `content/site.mjs`. Every field is commented. Empty values ("" or []) are left off the page entirely.
+2. Rebuild: `node scripts/build.mjs` (Node 18 or newer).
+3. Commit both `content/site.mjs` and the regenerated `index.html`.
 
-- **`booking.url`**: the Vagaro link. Until it's set, booking buttons lead to a short "message Adam on Instagram" panel instead of a broken link. Once it's set, every booking button opens Vagaro in a new tab and the copy switches to say so.
-- **`booking.consultationUrl`** (optional): a direct Vagaro link to the consultation service.
-- **`contact`**: phone, email, hours, visit notes (parking, entrance). Each one shows in the Visit section and is added to Google's business data.
-- **`services`**: per service, `price`, `duration`, `note` (booking requirement or what's included) and `bookingUrl` (only if Vagaro has a direct link to that service).
-- **`gallery`**: Adam's photos. The Work section and menu link appear once there is at least one.
-- **`about`**: bio paragraphs and a portrait.
-- **`reviews`**: real client reviews only. The section appears once one is added.
+`node scripts/build.mjs --check` reports whether `index.html` is out of date.
 
-The hero headline, tagline and one-line description are written directly in `index.html` so they load instantly.
+**Why a build step:** the services, booking links, contact details and search-engine data are written into `index.html` itself, so they show without JavaScript and appear immediately for visitors and search engines, while still coming from one editable file. GitHub Pages keeps serving the committed `index.html`; nothing about the deployment changed. **The tradeoff** is that someone has to run the build after editing `content/site.mjs`. If editing happens on github.com, a small GitHub Actions workflow could run the build automatically, but that would change how the site deploys, so it hasn't been added.
+
+What appears automatically once filled in:
+- `booking.consultationUrl`: a separate "Book a consultation" button (only with a link that opens the consultation itself)
+- `booking.instructions`: a one-line note under the booking buttons, e.g. "On Vagaro, choose Adam Arledge as your professional."
+- `services[].items[]`: `price`, `duration`, `note` (requirement or inclusion) and `bookingUrl` (a link that opens that exact service)
+- `contact`: phone, email, hours, visit notes
+- `firstVisit`: the "Your first visit" steps section
+- `gallery`: the Selected work section, its menu link and the photo viewer
+- `about`: bio paragraphs and portrait
+- `reviews`: the client reviews section and its menu link
+
+## Booking and links
+
+- **Booking:** every "Book an appointment" button opens `https://www.vagaro.com/ideationpros/book-now` in a new tab. This is the salon's general Vagaro booking page; Vagaro lists the business as "Ideation Spa Salon" with several professionals, so visitors probably need to pick Adam in the flow. That step hasn't been checked (Vagaro couldn't be opened from the build environment), so no instruction is shown yet. Once confirmed, add it as `booking.instructions`.
+- **More links:** `https://linktr.ee/AAHairArtistry` appears as a secondary link in the Visit section and footer. Booking never routes through it. Its contents couldn't be inspected, so no extra social profiles were added from it.
+- **Instagram:** `@adamarledge`, as supplied by the owner.
 
 ## Content still needed
 
-The site shows only confirmed facts. These are missing:
+| Content | Where it goes |
+|---|---|
+| Confirm the Vagaro flow: does the visitor choose Adam? Wording for that step | `booking.instructions` |
+| Direct Vagaro links for Adam's services or consultation (only real links from Vagaro) | `services[].items[].bookingUrl`, `booking.consultationUrl` |
+| Service names as they appear on Adam's Vagaro menu (rename or regroup to match) | `services` |
+| Starting prices and approximate durations | `price`, `duration` |
+| Consultation rules: which services need one, new-client rules, color corrections | `note` beside each service |
+| Whether vivids include lightening; root touch-up vs all-over color; highlights vs balayage as one booking or two | `services` |
+| What each service includes (wash, toner, gloss...) | `description` / `note` |
+| Whether the consultation is free and how long it is | Consultation `price` / `duration` |
+| 4–6 photos of Adam's work with descriptions; optional hero photo | `gallery`, `images/work/` |
+| Portrait and short bio (background, specialties, what an appointment is like) | `about` |
+| First-visit guidance (arrival, what to bring), if Adam wants it | `firstVisit` |
+| Adam's public phone and/or email, if he wants them listed | `contact` |
+| Hours or "by appointment" wording for Adam's chair | `contact.hours` |
+| Parking, entrance or accessibility details | `contact.visitNotes` |
+| Client reviews, with permission and source | `reviews` |
+| Social profiles linked from the Linktree (direct URLs) | `social` |
 
-| Content | Where it goes | Shows up in |
-|---|---|---|
-| Vagaro booking URL | `booking.url` | Every Book button, Services, Visit, first-visit steps |
-| Consultation link on Vagaro (optional) | `booking.consultationUrl` | "Book a consultation" buttons |
-| Starting prices per service | `services[].items[].price` | Services list |
-| Approximate durations | `services[].items[].duration` | Services list |
-| Consultation rules: which services require one; new-client rules; color corrections | `services[].items[].note` | Beside each affected service |
-| Whether vivids include lightening or it's booked separately | Vivid Color `note` | Services list |
-| Whether a root touch-up is a separate service from all-over color | New item in `services` | Services list |
-| Whether highlights and balayage are one booking or two | `services` | Services list |
-| What each service includes (e.g. wash, toner, gloss) | `description` / `note` | Services list |
-| Whether the consultation is free and how long it is | Consultation `price` / `duration` | Services list |
-| 4–6 photos of Adam's work, with descriptions | `gallery` + `images/work/` | Selected work section (hidden until added) |
-| A strong hero photo (optional) | `index.html` hero, see the comment there | Hero |
-| Portrait of Adam | `about.portrait` | Meet Adam |
-| Short bio: background, specialties, what an appointment is like | `about.paragraphs` | Meet Adam |
-| Phone and/or email (only if Adam wants them public) | `contact` | Visit section, Google data |
-| Hours or "by appointment only" wording | `contact.hours` | Visit section, Google data |
-| Parking, entrance or accessibility details | `contact.visitNotes` | Visit section |
-| Client reviews with permission and source | `reviews` | Reviews section (hidden until added) |
-| TikTok or other social accounts, if any | `social` | Footer, Google data |
+**Studio name, unresolved:** the site says "Ideation Spa" (as the owner gave it). Vagaro lists the business as "Ideation Spa Salon", and the salon's own website and Vagaro handle use "Ideation Professionals" / "ideationpros". All three share the 1042 Broad Street address. Confirm which name visitors should look for, then change `business.studio`.
 
-To check: a public directory lists the business at 1042 Broad Street as **"Ideation Professionals"**, not "Ideation Spa". If the spa has changed its name, update the studio name everywhere it appears in `index.html`.
+**Not added on purpose:** the salon's phone number and hours appear on public listings, but they're salon-wide and the listings disagree on hours, so they aren't shown as Adam's. Staff-page text found through search wasn't clearly attributable to Adam, so no bio details were taken from it.
 
 ## Design system
 
-**Direction:** editorial punk. Warm ivory paper, near-black ink, one cobalt accent, bold condensed display type, and one recurring four-point sparkle. The hair photography should carry the visual interest; the layout stays out of its way.
+**Direction:** editorial punk. Warm ivory paper, near-black ink, one cobalt accent, bold condensed display type and one recurring four-point sparkle. The hair photography should carry the visual interest.
 
-**Fonts** (Google Fonts): Anton for the wordmark and section headings, DM Sans for body and interface text, Instrument Serif Italic as a sparing accent (the tagline, the Meet Adam intro, review quotes).
+**Fonts** (Google Fonts): Anton for the wordmark and section headings, DM Sans for body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
 
 **Tokens** live at the top of `css/styles.css`: color, type scale, spacing (8 / 16 / 24 / 32 / 48 / 64 / 96), one image radius (6px), one button radius (4px).
-
-**Color roles and contrast (WCAG AA):**
 
 | Pair | Ratio | Use |
 |---|---|---|
 | Ink `#171715` on ivory `#F2EFE8` | 15.6 | Body text, headings |
-| Muted `#5C5A54` on ivory / stone | 6.0 / 5.2 | Secondary text |
+| Muted `#5C5A54` on ivory / stone | 6.0 / 5.2 | Secondary text, fine print |
 | White on cobalt `#3755EE` | 5.7 | Primary button labels |
 | Cobalt on ivory | 4.95 | Links, step numbers |
 | Cobalt on stone `#E4DFD3` | 4.3 ❌ | Not used as text; links on stone are ink with a cobalt underline |
 | Ivory on ink | 15.6 | Visit section text |
 | `#9DADFF` on ink | 8.4 | Links and focus rings on the dark section |
-| Cobalt against ink | 3.2 | Primary button edge on dark (meets the 3:1 rule for controls) |
+| Cobalt against ink | 3.2 | Button edge on dark (meets 3:1 for controls) |
 
-**Components:** primary button (cobalt fill), secondary button (ink outline), text link with arrow, the booking panel, service rows, numbered steps, and the photo viewer (keyboard arrows, Escape, visible Previous/Next/Close, focus returns to the photo that opened it).
+**Components:** primary button (cobalt fill, with a small arrow meaning "opens in a new tab"), secondary button (ink outline), text link with arrow, booking panel, service rows, numbered steps, and the photo viewer (Previous / Next / Close buttons, arrow keys, Escape, focus kept inside and returned to the photo that opened it).
 
-**Motion:** only small hover transitions. Everything is off when the visitor's device asks for reduced motion.
+**Motion:** only small hover transitions, all off under "reduce motion".
 
 ## Preview locally
 
 ```bash
+node scripts/build.mjs
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
 ## Deploy
 
-GitHub Pages publishes the `main` branch (Settings → Pages → Deploy from a branch → `main`, `/ (root)`). Merge a pull request into `main` and the site updates within a minute or two. All paths are relative, so the site also works as a project site or on a custom domain; if you add a custom domain, update the `adamarledge.github.io` URLs in `<head>`.
+GitHub Pages publishes the `main` branch (Settings → Pages → Deploy from a branch → `main`, `/ (root)`). Merge into `main` and the site updates within a minute or two. Paths are relative, so the site also works as a project site or on a custom domain; for a custom domain, update `business.siteUrl` in `content/site.mjs` and rebuild.
