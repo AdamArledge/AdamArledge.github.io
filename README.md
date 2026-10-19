@@ -6,11 +6,13 @@ One-page site for AAHairArtistry: hair by Adam Arledge, inside Ideation Spa, 104
 content/site.mjs      ALL editable business content (booking, services, links, photos, reviews)
 templates/index.html  page layout and fixed copy, with {{ }} slots filled from site.mjs
 scripts/build.mjs     writes index.html from the two files above (no dependencies)
+scripts/wordmark.py   generates the banded hero wordmark (only when its design changes)
 index.html            GENERATED: what GitHub Pages serves. Don't edit it by hand.
 css/styles.css        all styles; design tokens at the top (:root)
 js/main.js            mobile menu and photo viewer
 images/               social preview image; Adam's photos go in images/work/ (see images/README.md)
 assets/svg/           favicon
+assets/wordmark/      the banded wordmark as standalone SVGs (line.svg, stack.svg) for reuse elsewhere
 ```
 
 ## Editing content
@@ -66,20 +68,30 @@ What appears automatically once filled in:
 
 ## Design system
 
-**Direction:** editorial punk. Warm ivory paper, near-black ink, one cobalt accent, bold condensed display type and one recurring four-point sparkle. The hair photography should carry the visual interest.
+**Direction:** editorial punk. Warm cream paper, near-black ink, a burgundy banded wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
 
-**Fonts** (Google Fonts): Anton for the wordmark and section headings, DM Sans for body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
+**Wordmark:** "AAhairartistry" built from thick, rounded horizontal bands with narrow gaps that bend in a gentle wave through the word, in burgundy on cream. It's drawn as SVG (not a font), shown on one line on wide screens and stacked "AAhair / artistry" on phones; the heading text is still real text for screen readers and search engines. The header and footer use a plain DM Sans logotype, because below about 300px wide the bands blur together. To change the wordmark's spelling, band count, gap or wave, edit `VARIANTS` in `scripts/wordmark.py`, then:
+
+```bash
+python3 scripts/wordmark.py --font path/to/Rubik-ExtraBold.ttf   # needs Pillow + numpy
+node scripts/build.mjs
+```
+
+Rubik ExtraBold (Google Fonts, SIL Open Font License) is the letter skeleton; its two-story "a" keeps "hair" and "artistry" readable once banded.
+
+**Fonts** (Google Fonts): Anton for section headings, DM Sans for navigation, body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
 
 **Tokens** live at the top of `css/styles.css`: color, type scale, spacing (8 / 16 / 24 / 32 / 48 / 64 / 96), one image radius (6px), one button radius (4px).
 
 | Pair | Ratio | Use |
 |---|---|---|
-| Ink `#171715` on ivory `#F2EFE8` | 15.6 | Body text, headings |
-| Muted `#5C5A54` on ivory / stone | 6.0 / 5.2 | Secondary text, fine print |
+| Ink `#171715` on cream `#F1EADF` | 15.0 | Body text, headings |
+| Burgundy `#4A1C24` on cream | 11.9 | The wordmark |
+| Muted `#5C5A54` on cream / stone | 5.8 / 5.1 | Secondary text, fine print |
 | White on cobalt `#3755EE` | 5.7 | Primary button labels |
-| Cobalt on ivory | 4.95 | Links, step numbers |
-| Cobalt on stone `#E4DFD3` | 4.3 ❌ | Not used as text; links on stone are ink with a cobalt underline |
-| Ivory on ink | 15.6 | Visit section text |
+| Cobalt on cream | 4.75 | Links, step numbers |
+| Cobalt on stone `#E6DDCE` | 4.2 ❌ | Not used as text; links on stone are ink with a cobalt underline |
+| Cream on ink | 15.0 | Visit section text |
 | `#9DADFF` on ink | 8.4 | Links and focus rings on the dark section |
 | Cobalt against ink | 3.2 | Button edge on dark (meets 3:1 for controls) |
 
