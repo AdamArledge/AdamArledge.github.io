@@ -72,8 +72,23 @@ const blocks = {};
 
 blocks.generatedNotice = "<!-- GENERATED FILE: edit templates/index.html or content/site.mjs, then run `node scripts/build.mjs`. -->";
 
-// Break the tagline only after commas
-blocks.taglineHtml = biz.tagline.split(/(?<=,)\s+/).map((part) => `<span>${esc(part)}</span>`).join(" ");
+// One span per phrase (split after commas and full stops): the tagline breaks
+// only between phrases, and each phrase bleeds in on its own (js/ink.js)
+// through its own SVG filter, so each soaks in with a different grain.
+// The filters' animations are started by the script; until then, and once
+// they finish, every primitive is at rest and the letters are untouched.
+const phrases = biz.tagline.split(/(?<=[,.])\s+/);
+blocks.taglineHtml = phrases.map((part, i) => `<span data-ink="${i}">${esc(part)}</span>`).join(" ");
+const inkAnimate = (attr, values) =>
+  `<animate attributeName="${attr}" values="${values}" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/>`;
+blocks.inkFilters = indent(phrases.map((_, i) => [
+  `<filter id="ink-${i}" x="-6%" y="-25%" width="112%" height="150%" color-interpolation-filters="sRGB">`,
+  `  <feMorphology operator="dilate" radius="0" result="spread">${inkAnimate("radius", "1.6;0.5;0")}</feMorphology>`,
+  `  <feGaussianBlur in="spread" stdDeviation="0.001" result="wet">${inkAnimate("stdDeviation", "3.5;0.9;0.001")}</feGaussianBlur>`,
+  `  <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="${7 + i * 13}" result="fibres"/>`,
+  `  <feDisplacementMap in="wet" in2="fibres" scale="0" xChannelSelector="R" yChannelSelector="G">${inkAnimate("scale", "16;5;0")}</feDisplacementMap>`,
+  `</filter>`
+].join("\n")).join("\n"), 4);
 
 const nav = [
   gallery.length && ["#work", "Work"],

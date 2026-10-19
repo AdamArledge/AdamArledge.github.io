@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>AAHairArtistry | Hair by Adam Arledge in Camden, SC</title>
-  <meta name="description" content="Sharp cuts, loud color, zero boring. Haircuts, color, highlights and balayage, and vivid color by Adam Arledge, inside Ideation Spa in Camden, SC.">
+  <meta name="description" content="Sharp Cuts. Loud Color. Never Boring. Haircuts, color, highlights and balayage, and vivid color by Adam Arledge, inside Ideation Spa in Camden, SC.">
   <meta name="theme-color" content="#F1EADF">
   <link rel="canonical" href="https://adamarledge.github.io/">
 
@@ -14,12 +14,12 @@
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AAHairArtistry">
   <meta property="og:title" content="AAHairArtistry | Hair by Adam Arledge in Camden, SC">
-  <meta property="og:description" content="Sharp cuts, loud color, zero boring. Inside Ideation Spa, Camden, SC.">
+  <meta property="og:description" content="Sharp Cuts. Loud Color. Never Boring. Inside Ideation Spa, Camden, SC.">
   <meta property="og:url" content="https://adamarledge.github.io/">
   <meta property="og:image" content="https://adamarledge.github.io/images/og-image.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="AAHairArtistry wordmark with the tagline Sharp cuts, loud color, zero boring.">
+  <meta property="og:image:alt" content="AAHairArtistry wordmark with the tagline Sharp Cuts. Loud Color. Never Boring.">
   <meta name="twitter:card" content="summary_large_image">
 
   <link rel="icon" href="assets/svg/favicon.svg" type="image/svg+xml">
@@ -37,11 +37,12 @@
        "js" lays out the header with the Menu button (js/main.js makes it work),
        "halftone" reserves the hero wordmark's box and hides its plain-type
        fallback until js/wordmark.js draws it (the type returns after 3s if it
-       never does). If main.js hasn't run by the time the page has loaded, the
+       never does); "ink" hides the tagline until js/ink.js bleeds it in (same
+       3s safety net). If main.js hasn't run by the time the page has loaded, the
        header goes back to its plain list of links. -->
   <script>
     (function (root) {
-      root.classList.add("js", "halftone");
+      root.classList.add("js", "halftone", "ink");
       window.addEventListener("load", function () {
         if (!root.hasAttribute("data-menu")) root.classList.remove("js");
       });
@@ -54,7 +55,7 @@
     "@context": "https://schema.org",
     "@type": "HairSalon",
     "name": "AAHairArtistry",
-    "description": "Sharp cuts, loud color, zero boring. Haircuts, color, highlights and balayage, and vivid color by Adam Arledge.",
+    "description": "Sharp Cuts. Loud Color. Never Boring. Haircuts, color, highlights and balayage, and vivid color by Adam Arledge.",
     "url": "https://adamarledge.github.io/",
     "image": "https://adamarledge.github.io/images/og-image.jpg",
     "address": {
@@ -85,6 +86,25 @@
 
   <!-- Four-point sparkle, the one recurring motif. Color comes from CSS (currentColor). -->
   <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <!-- Ink-bleed filters for the hero tagline, one per phrase (js/ink.js) -->
+    <filter id="ink-0" x="-6%" y="-25%" width="112%" height="150%" color-interpolation-filters="sRGB">
+      <feMorphology operator="dilate" radius="0" result="spread"><animate attributeName="radius" values="1.6;0.5;0" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feMorphology>
+      <feGaussianBlur in="spread" stdDeviation="0.001" result="wet"><animate attributeName="stdDeviation" values="3.5;0.9;0.001" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feGaussianBlur>
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="7" result="fibres"/>
+      <feDisplacementMap in="wet" in2="fibres" scale="0" xChannelSelector="R" yChannelSelector="G"><animate attributeName="scale" values="16;5;0" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feDisplacementMap>
+    </filter>
+    <filter id="ink-1" x="-6%" y="-25%" width="112%" height="150%" color-interpolation-filters="sRGB">
+      <feMorphology operator="dilate" radius="0" result="spread"><animate attributeName="radius" values="1.6;0.5;0" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feMorphology>
+      <feGaussianBlur in="spread" stdDeviation="0.001" result="wet"><animate attributeName="stdDeviation" values="3.5;0.9;0.001" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feGaussianBlur>
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="20" result="fibres"/>
+      <feDisplacementMap in="wet" in2="fibres" scale="0" xChannelSelector="R" yChannelSelector="G"><animate attributeName="scale" values="16;5;0" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feDisplacementMap>
+    </filter>
+    <filter id="ink-2" x="-6%" y="-25%" width="112%" height="150%" color-interpolation-filters="sRGB">
+      <feMorphology operator="dilate" radius="0" result="spread"><animate attributeName="radius" values="1.6;0.5;0" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feMorphology>
+      <feGaussianBlur in="spread" stdDeviation="0.001" result="wet"><animate attributeName="stdDeviation" values="3.5;0.9;0.001" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feGaussianBlur>
+      <feTurbulence type="fractalNoise" baseFrequency="0.05 0.09" numOctaves="2" seed="33" result="fibres"/>
+      <feDisplacementMap in="wet" in2="fibres" scale="0" xChannelSelector="R" yChannelSelector="G"><animate attributeName="scale" values="16;5;0" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/></feDisplacementMap>
+    </filter>
     <symbol id="sparkle" viewBox="0 0 100 100">
       <path d="M50 0C52.6 34 66 47.4 100 50 66 52.6 52.6 66 50 100 47.4 66 34 52.6 0 50 34 47.4 47.4 34 50 0Z" fill="currentColor"/>
     </symbol>
@@ -134,7 +154,7 @@
         </h1>
 
         <div class="hero__body">
-          <p class="hero__tagline"><span>Sharp cuts,</span> <span>loud color,</span> <span>zero boring.</span></p>
+          <p class="hero__tagline"><span data-ink="0">Sharp Cuts.</span> <span data-ink="1">Loud Color.</span> <span data-ink="2">Never Boring.</span></p>
           <div class="hero__detail">
             <p class="hero__summary">Haircuts, color, highlights and balayage, and vivid color by Adam Arledge.</p>
             <div class="actions">
@@ -275,5 +295,6 @@
 
   <script src="js/main.js" defer></script>
   <script src="js/wordmark.js" defer></script>
+  <script src="js/ink.js" defer></script>
 </body>
 </html>

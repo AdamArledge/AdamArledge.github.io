@@ -37,11 +37,12 @@
        "js" lays out the header with the Menu button (js/main.js makes it work),
        "halftone" reserves the hero wordmark's box and hides its plain-type
        fallback until js/wordmark.js draws it (the type returns after 3s if it
-       never does). If main.js hasn't run by the time the page has loaded, the
+       never does); "ink" hides the tagline until js/ink.js bleeds it in (same
+       3s safety net). If main.js hasn't run by the time the page has loaded, the
        header goes back to its plain list of links. -->
   <script>
     (function (root) {
-      root.classList.add("js", "halftone");
+      root.classList.add("js", "halftone", "ink");
       window.addEventListener("load", function () {
         if (!root.hasAttribute("data-menu")) root.classList.remove("js");
       });
@@ -58,6 +59,8 @@
 
   <!-- Four-point sparkle, the one recurring motif. Color comes from CSS (currentColor). -->
   <svg width="0" height="0" class="sprite" aria-hidden="true" focusable="false">
+    <!-- Ink-bleed filters for the hero tagline, one per phrase (js/ink.js) -->
+{{{inkFilters}}}
     <symbol id="sparkle" viewBox="0 0 100 100">
       <path d="M50 0C52.6 34 66 47.4 100 50 66 52.6 52.6 66 50 100 47.4 66 34 52.6 0 50 34 47.4 47.4 34 50 0Z" fill="currentColor"/>
     </symbol>
@@ -194,5 +197,6 @@
 {{{lightbox}}}
   <script src="js/main.js" defer></script>
   <script src="js/wordmark.js" defer></script>
+  <script src="js/ink.js" defer></script>
 </body>
 </html>

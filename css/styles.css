@@ -411,8 +411,23 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   line-height: 1;
   letter-spacing: -0.01em;
 }
-/* Break only at the commas */
+/* Each phrase is a span, so lines break only between phrases.
+   Ink bleed (js/ink.js): on load the phrases soak in one after another, like
+   ink on paper. Each starts as a swollen, feathered blot with fibrous edges
+   (its SVG filter in the page's sprite), then draws in to crisp letters.
+   html.ink is set in the <head> so the tagline is hidden from the first paint
+   rather than flashing; it appears anyway after 3s if the script never runs.
+   Under "reduce motion" the tagline is simply shown. */
 .hero__tagline span { display: inline-block; }
+@media (prefers-reduced-motion: no-preference) {
+  .ink .hero__tagline span { opacity: 0; animation: ink-fallback 0s 3s forwards; }
+  .ink .hero__tagline.is-bleeding span {
+    animation: ink-in 1.8s cubic-bezier(0.2, 0.6, 0.35, 1) both;
+    animation-delay: calc(0.1s + var(--ink-order, 0) * 0.42s);
+  }
+}
+@keyframes ink-fallback { to { opacity: 1; } }
+@keyframes ink-in { 0% { opacity: 0; } 30% { opacity: 1; } 100% { opacity: 1; } }
 .hero__detail { display: grid; gap: var(--s2); align-content: start; }
 .hero__detail .actions { margin-top: var(--s1); }
 .hero__summary { font-size: var(--text-lg); max-width: 32ch; }
@@ -760,6 +775,8 @@ html:has(.lightbox[open]) { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  /* Not motion: reveals the wordmark's plain type if its script never runs */
+  .halftone .hero__name { animation: wordmark-fallback 0s 3s forwards !important; }
 }
 
 /* ---------- Print ---------- */

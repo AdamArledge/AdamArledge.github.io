@@ -12,7 +12,7 @@ export default {
   business: {
     name: "AAHairArtistry",
     stylist: "Adam Arledge",
-    tagline: "Sharp cuts, loud color, zero boring.",
+    tagline: "Sharp Cuts. Loud Color. Never Boring.",
     summary: "Haircuts, color, highlights and balayage, and vivid color by Adam Arledge.",
     // NOTE: Vagaro lists this business as "Ideation Spa Salon" and its website
     // as "Ideation Professionals". Confirm which name to show, then change it here.
