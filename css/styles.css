@@ -359,12 +359,12 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 .hero__place span { display: inline-block; }
 .hero__dot { margin-inline: 0.6em; color: var(--cobalt); }
 
-/* The masthead: the solid wordmark, two lines on narrow screens and one line
-   from 40em. Its SVG is in the page from the start, so its space is reserved.
-   html.assemble (set in the <head>) keeps it hidden until js/wordmark.js
-   assembles it from fragments; it shows after 3s if the script never runs,
-   and straight away under "reduce motion". */
-.hero { overflow: hidden; } /* the fragments start slightly outside the wordmark */
+/* The masthead: the wordmark, two lines on narrow screens and one line from
+   40em, drawn as halftone dots by js/wordmark.js (canvases that take their dot
+   color from this element). The solid SVG underneath reserves the space and is
+   the fallback: html.assemble (set in the <head>) keeps it hidden until the
+   dots are drawn, and it shows after 3s if the script never runs. */
+.hero { overflow: hidden; } /* the loose dots start slightly outside the wordmark */
 .hero__title {
   color: var(--burgundy);
   padding-bottom: var(--s2);
@@ -373,14 +373,11 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 .hero__art { display: block; position: relative; }
 .hero__art .wordmark-art--stack { max-width: 26rem; }
 .hero__art .wordmark-art--line { display: none; max-width: 75rem; }
-@media (prefers-reduced-motion: no-preference) {
-  .assemble .hero__art:not(.is-assembled) > .wordmark-art {
-    visibility: hidden;
-    animation: wordmark-reveal 0s 3s forwards;
-  }
-}
+.assemble .hero__art:not(.is-drawn) > .wordmark-art { visibility: hidden; animation: wordmark-reveal 0s 3s forwards; }
+.hero__art.is-drawn > .wordmark-art { visibility: hidden; }
 @keyframes wordmark-reveal { to { visibility: visible; } }
-.hero__pieces { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; fill: currentColor; }
+.hero__dots, .hero__scatter { position: absolute; pointer-events: none; }
+.hero__art.is-assembling .hero__dots { visibility: hidden; }
 
 .hero__body { display: grid; gap: var(--s3); padding-top: var(--s1); }
 .hero__tagline {
@@ -756,6 +753,8 @@ html:has(.lightbox[open]) { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  /* Not motion: shows the solid wordmark if its script never runs */
+  .assemble .hero__art:not(.is-drawn) > .wordmark-art { animation: wordmark-reveal 0s 3s forwards !important; }
 }
 
 /* ---------- Print ---------- */

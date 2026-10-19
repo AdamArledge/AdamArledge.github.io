@@ -10,7 +10,7 @@ scripts/wordmark.py   draws the wordmark SVGs (only when its design changes)
 index.html            GENERATED: what GitHub Pages serves. Don't edit it by hand.
 css/styles.css        all styles; design tokens at the top (:root)
 js/main.js            mobile menu and photo viewer
-js/wordmark.js        the hero wordmark's opening assembly
+js/wordmark.js        draws the hero wordmark in halftone dots and plays its opening assembly
 js/ink.js             the tagline's ink-bleed entrance
 images/               social preview image; Adam's photos go in images/work/ (see images/README.md)
 assets/svg/           favicon
@@ -70,9 +70,9 @@ What appears automatically once filled in:
 
 ## Design system
 
-**Direction:** editorial punk. Warm cream paper, near-black ink, a solid burgundy slanted wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
+**Direction:** editorial punk. Warm cream paper, near-black ink, a burgundy halftone-dot wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
 
-**Wordmark:** "AAhairartistry" as custom solid lettering, modelled on the character of a reference logo ("CIRCA" by SLAPS): very heavy, broad letters with a strong forward slant, soft rounded outer contours, small softened counters, and tight spacing where A–A, h–a and r–t fuse into one shape while every other pair keeps the same narrow gap. It's SVG, not a font, in burgundy on cream (cream on ink in the footer), and comes in three versions:
+**Wordmark:** "AAhairartistry" as custom lettering, modelled on the character of a reference logo ("CIRCA" by SLAPS): very heavy, broad letters with a strong forward slant, soft rounded outer contours, small softened counters, and tight spacing where A–A, h–a and r–t fuse into one shape while every other pair keeps the same narrow gap. It's SVG, not a font, in burgundy on cream (cream on ink in the footer). In the hero it's printed in halftone dots (below); the header and footer show it solid, because dots don't read at 20px. It comes in three versions:
 
 | Version | Used for |
 |---|---|
@@ -87,9 +87,11 @@ python3 scripts/wordmark.py --font path/to/Unbounded-Black.ttf   # needs Pillow,
 node scripts/build.mjs
 ```
 
-**Opening assembly:** on each page load the hero wordmark (only; the header logo stays still) arrives in about 25–30 clean, slanted fragments cut from its real letter shapes. They start pushed out around the word and turned a little, then glide together in about one second (fast at first, settling gently, no overshoot). The fragments are a temporary copy laid exactly over the real SVG; when they land, the copy is removed and the original is shown in the same frame, so no seams are left. The wordmark's space is reserved from the first paint, it's hidden until the assembly starts (so it never flashes in finished first), and it shows complete straight away for visitors with "reduce motion" on, without JavaScript, or after 3 seconds if the script fails. Timing and spread are the constants at the top of `js/wordmark.js`.
+**Halftone dots (hero):** `js/wordmark.js` fills the wordmark's SVG outline into a hidden canvas, measures how much ink falls in each cell of a dot grid (14 rows of dots per capital height), and draws one round dot per cell: inside the letters the dots swell and run together, leaving small light holes; at the edges they shrink to specks. It's drawn for the screen's pixel density and redrawn when the layout changes. The solid SVG stays underneath, hidden: it reserves the space from the first paint and is what shows without JavaScript (or after 3 seconds if the script fails). `CELLS_PER_CAP`, `DENSITY` and `TEXTURE` at the top of `js/wordmark.js` set the dot size, darkness and irregularity.
 
-The heading's text is real for screen readers and search engines ("AAHairArtistry"); the SVGs are decorative.
+**Opening assembly:** on each page load the dots float loose around the wordmark for about two and a half seconds, drifting and slowly drawing in, then gather into the letters from the centre outwards; the whole sequence takes about 4.7 seconds. The pieces are tiles cut from the finished dot image, so they land pixel for pixel on it. It stays under 5 seconds on purpose: accessibility guidelines (WCAG 2.2.2) require a pause control for motion that starts on its own and lasts longer. It plays once (not on scroll or resize), only in the hero (the header logo stays still), and visitors with "reduce motion" on get the finished dots straight away. The timing is set by `FLOAT`, `GATHER_STAGGER`, `GATHER_MIN`, `GATHER_MAX`, `DRIFT` and `SCATTER` at the top of `js/wordmark.js`.
+
+The heading's text is real for screen readers and search engines ("AAHairArtistry"); the SVGs and canvases are decorative.
 
 **Tagline:** "Sharp Cuts. Loud Color. Never Boring." (`business.tagline` in `content/site.mjs`). On load each phrase bleeds in like ink on paper: it arrives as a swollen, feathered blot with fibrous edges and dries to crisp letters in about 1.8 seconds, the three phrases 0.42 seconds apart, all done by about 2.7 seconds and readable well before that. The build splits the tagline into phrases at commas and full stops and writes one SVG filter per phrase into the page; `js/ink.js` starts them and removes them when they finish, so the text ends up as ordinary text. It's skipped under "reduce motion", and the tagline shows anyway after 3 seconds if the script never runs. The strength of the bleed is the `values` in `inkAnimate` in `scripts/build.mjs` (spread, blur and edge roughness at the start, at 35% and at the end).
 

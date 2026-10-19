@@ -33,8 +33,8 @@
   <link rel="stylesheet" href="css/styles.css">
   <!-- Set before the first paint, so nothing moves when the scripts run:
        "js" lays out the header with the Menu button (js/main.js makes it work),
-       "assemble" hides the finished hero wordmark (its space stays reserved)
-       until js/wordmark.js assembles it (it shows anyway after 3s if the
+       "assemble" hides the solid hero wordmark (its space stays reserved)
+       until js/wordmark.js draws it in dots (it shows anyway after 3s if the
        script never runs); "ink" hides the tagline until js/ink.js bleeds it in (same
        3s safety net). If main.js hasn't run by the time the page has loaded, the
        header goes back to its plain list of links. -->
@@ -100,8 +100,9 @@
         <p class="hero__place"><span>{{address.city}}, {{address.region}}</span><span class="hero__dot" aria-hidden="true">&middot;</span><span>Inside {{business.studio}}</span></p>
 
         <!-- The wordmark: two lines on narrow screens, one line from 40em. It's
-             in the page as finished SVG; js/wordmark.js only plays the opening
-             assembly over it. -->
+             in the page as solid SVG (the fallback, and what reserves the
+             space); js/wordmark.js redraws it in halftone dots and plays the
+             opening assembly. -->
         <h1 class="hero__title" id="hero-title">
           <span class="visually-hidden">{{business.name}}</span>
           <span class="hero__art">{{{wordmarkStack}}}{{{wordmarkLine}}}</span>
