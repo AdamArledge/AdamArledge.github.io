@@ -27,12 +27,13 @@
   var MASK = 1.6;           // mask pixels per SVG unit when measuring the letters
 
   // Assembly animation, in ms. Every piece has landed by
-  // FLOAT + GATHER_STAGGER + GATHER_MAX (keep it under 5000).
-  var FADE_IN = 400;        // the loose dots fade up as the page opens
-  var FLOAT = 2400;         // how long the dots drift before any start to gather
-  var GATHER_STAGGER = 700; // latest start; the centre of the word gathers first
-  var GATHER_MIN = 1300;    // shortest and longest gathering time
-  var GATHER_MAX = 1700;
+  // FLOAT + GATHER_STAGGER + GATHER_MAX (about 3s, leaving about 2s for the
+  // tagline's ink bleed so the whole opening is about 5s).
+  var FADE_IN = 300;        // the loose dots fade up as the page opens
+  var FLOAT = 1300;         // how long the dots drift before any start to gather
+  var GATHER_STAGGER = 450; // latest start; the centre of the word gathers first
+  var GATHER_MIN = 1000;    // shortest and longest gathering time
+  var GATHER_MAX = 1300;
   var SCATTER = 1.1;        // how far pieces start from home, in capital-letter heights
   var DRAW_IN = 0.18;       // share of that distance the cloud closes while still floating
   var DRIFT = 0.28;         // how far they wander while floating, in capital-letter heights

@@ -95,7 +95,7 @@ blocks.wordmarkSmall = wordmarkSvg("small");
 const phrases = biz.tagline.split(/(?<=[,.])\s+/);
 blocks.taglineHtml = phrases.map((part, i) => `<span data-ink="${i}">${esc(part)}</span>`).join(" ");
 const inkAnimate = (attr, values) =>
-  `<animate attributeName="${attr}" values="${values}" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.8s" begin="indefinite" fill="freeze"/>`;
+  `<animate attributeName="${attr}" values="${values}" keyTimes="0;0.35;1" calcMode="spline" keySplines="0.2 0.6 0.35 1;0.3 0.5 0.3 1" dur="1.3s" begin="indefinite" fill="freeze"/>`;
 blocks.inkFilters = indent(phrases.map((_, i) => [
   `<filter id="ink-${i}" x="-6%" y="-25%" width="112%" height="150%" color-interpolation-filters="sRGB">`,
   `  <feMorphology operator="dilate" radius="0" result="spread">${inkAnimate("radius", "1.6;0.5;0")}</feMorphology>`,

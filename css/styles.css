@@ -387,20 +387,29 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   line-height: 1;
   letter-spacing: -0.01em;
 }
+/* Phones: one line, sized to the width. The tagline is about 13em wide in
+   Instrument Serif Italic; dividing the column by 13.4 leaves room for the
+   italic overhang, and nowrap keeps it on one line while the font loads. */
+@media (max-width: 39.9375em) {
+  .hero__tagline {
+    font-size: clamp(1.125rem, (100vw - 2 * var(--gutter)) / 13.4, 2rem);
+    white-space: nowrap;
+  }
+}
 /* Each phrase is a span, so lines break only between phrases.
    Ink bleed (js/ink.js): once the hero wordmark has formed, the phrases soak
    in one after another, like ink on paper. Each starts as a swollen, feathered blot with fibrous edges
    (its SVG filter in the page's sprite), then draws in to crisp letters.
    html.ink is set in the <head> so the tagline is hidden from the first paint
-   rather than flashing; it appears anyway after 7s (once the wordmark would
+   rather than flashing; it appears anyway after 5s (once the wordmark would
    have formed) if the script never runs.
    Under "reduce motion" the tagline is simply shown. */
 .hero__tagline span { display: inline-block; }
 @media (prefers-reduced-motion: no-preference) {
-  .ink .hero__tagline span { opacity: 0; animation: ink-fallback 0s 7s forwards; }
+  .ink .hero__tagline span { opacity: 0; animation: ink-fallback 0s 5s forwards; }
   .ink .hero__tagline.is-bleeding span {
-    animation: ink-in 1.8s cubic-bezier(0.2, 0.6, 0.35, 1) both;
-    animation-delay: calc(0.1s + var(--ink-order, 0) * 0.42s);
+    animation: ink-in 1.3s cubic-bezier(0.2, 0.6, 0.35, 1) both;
+    animation-delay: calc(0.05s + var(--ink-order, 0) * 0.3s);
   }
 }
 @keyframes ink-fallback { to { opacity: 1; } }

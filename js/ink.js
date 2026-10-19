@@ -11,9 +11,9 @@
   var tagline = document.querySelector(".hero__tagline");
   if (!tagline || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-  var START = 0.1;    // seconds before the first phrase, and between phrases
-  var STEP = 0.42;    // (keep in step with the animation-delay in css/styles.css)
-  var DURATION = 1.8; // each phrase's bleed (the filters' dur)
+  var START = 0.05;   // seconds before the first phrase, and between phrases
+  var STEP = 0.3;     // (keep in step with the animation-delay in css/styles.css)
+  var DURATION = 1.3; // each phrase's bleed (the filters' dur in scripts/build.mjs)
   var phrases = tagline.querySelectorAll("[data-ink]");
 
   function start() {
@@ -36,7 +36,7 @@
   // Start when both are ready: the wordmark has formed (the brand comes
   // first), and the tagline's font has loaded (so it doesn't swap mid-bleed).
   // Each wait has a time limit, so a missing script or a slow font can't hold
-  // the tagline back past the CSS's own safety net (7s).
+  // the tagline back past the CSS's own safety net (5s).
   var root = document.documentElement;
   var wordmark = root.hasAttribute("data-wordmark"), font = false, started = false;
   function ready() {
@@ -45,7 +45,7 @@
     start();
   }
   document.addEventListener("wordmark:formed", function () { wordmark = true; ready(); });
-  setTimeout(function () { wordmark = true; ready(); }, 6000);
+  setTimeout(function () { wordmark = true; ready(); }, 4000);
   if (document.fonts && document.fonts.load) {
     var style = getComputedStyle(tagline);
     var loaded = function () { font = true; ready(); };
