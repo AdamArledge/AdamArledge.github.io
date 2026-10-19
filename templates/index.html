@@ -132,14 +132,12 @@
 {{{consultButton}}}
           </div>
           <p class="fine-print">Booking opens Vagaro in a new tab.{{bookingInstructionsInline}}</p>
-          <!-- Decoration: a dahlia drawn in digits blooms once when it scrolls
-               into view (js/bloom.js loads the video only then). Without
-               JavaScript, or with "reduce motion", it shows in full bloom. -->
-          <div class="bloom" aria-hidden="true">
-            <video class="bloom__video" muted playsinline preload="none" poster="images/bloom/dahlia-last.webp" data-start-poster="images/bloom/dahlia-first.webp" width="432" height="492">
-              <source data-src="images/bloom/dahlia.webm" type="video/webm">
-              <source data-src="images/bloom/dahlia.mp4" type="video/mp4">
-            </video>
+          <!-- Decoration: a dahlia drawn in digits, printed as see-through ink so
+               the page shows between them. It blooms once when it scrolls into
+               view (js/bloom.js loads the video only then); without JavaScript,
+               or with "reduce motion", it shows in full bloom. -->
+          <div class="bloom" aria-hidden="true" data-bud="images/bloom/dahlia-first.webp" data-webm="images/bloom/dahlia.webm" data-mp4="images/bloom/dahlia.mp4">
+            <img class="bloom__still" src="images/bloom/dahlia-last.webp" alt="" width="432" height="492" decoding="async">
           </div>
         </div>
 
