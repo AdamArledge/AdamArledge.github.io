@@ -1,9 +1,10 @@
 // Ink bleed for the hero tagline. Each phrase soaks in like ink on paper:
 // a swollen, feathered blot with fibrous edges that draws in to crisp
 // letters. The look is an SVG filter per phrase (generated into the page by
-// scripts/build.mjs); this starts them, staggered, once the tagline's font
-// has loaded, and removes the filters when they've finished so the text ends
-// up exactly as normal. Skipped under "reduce motion".
+// scripts/build.mjs); this starts them, staggered, once the hero wordmark has
+// formed (js/wordmark.js) and the tagline's font has loaded, and removes the
+// filters when they've finished so the text ends up exactly as normal.
+// Skipped under "reduce motion".
 (function () {
   "use strict";
 
@@ -32,15 +33,26 @@
     }, (START + (phrases.length - 1) * STEP + DURATION) * 1000 + 100);
   }
 
-  // Wait for the tagline's font so it doesn't swap mid-bleed, but not past
-  // the point where the CSS gives up and shows it anyway (3s)
-  var started = false;
-  var once = function () { if (!started) { started = true; start(); } };
+  // Start when both are ready: the wordmark has formed (the brand comes
+  // first), and the tagline's font has loaded (so it doesn't swap mid-bleed).
+  // Each wait has a time limit, so a missing script or a slow font can't hold
+  // the tagline back past the CSS's own safety net (7s).
+  var root = document.documentElement;
+  var wordmark = root.hasAttribute("data-wordmark"), font = false, started = false;
+  function ready() {
+    if (started || !wordmark || !font) return;
+    started = true;
+    start();
+  }
+  document.addEventListener("wordmark:formed", function () { wordmark = true; ready(); });
+  setTimeout(function () { wordmark = true; ready(); }, 6000);
   if (document.fonts && document.fonts.load) {
     var style = getComputedStyle(tagline);
-    document.fonts.load(style.fontStyle + " " + style.fontWeight + " 16px " + style.fontFamily, tagline.textContent).then(once, once);
-    setTimeout(once, 2500);
+    var loaded = function () { font = true; ready(); };
+    document.fonts.load(style.fontStyle + " " + style.fontWeight + " 16px " + style.fontFamily, tagline.textContent).then(loaded, loaded);
+    setTimeout(loaded, 2500);
   } else {
-    once();
+    font = true;
+    ready();
   }
 })();

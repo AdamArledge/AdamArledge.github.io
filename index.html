@@ -35,8 +35,8 @@
        "js" lays out the header with the Menu button (js/main.js makes it work),
        "assemble" hides the solid hero wordmark (its space stays reserved)
        until js/wordmark.js draws it in dots (it shows anyway after 3s if the
-       script never runs); "ink" hides the tagline until js/ink.js bleeds it in (same
-       3s safety net). If main.js hasn't run by the time the page has loaded, the
+       script never runs); "ink" hides the tagline until js/ink.js bleeds it in, after
+       the wordmark has formed (it shows anyway after 7s). If main.js hasn't run by the time the page has loaded, the
        header goes back to its plain list of links. -->
   <script>
     (function (root) {

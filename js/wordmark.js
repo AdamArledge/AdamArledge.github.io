@@ -5,7 +5,8 @@
 // solid fallback and reserves the space.
 //
 // On page load the dots drift loose around the wordmark for a couple of
-// seconds, like ink suspended in water, then gather slowly into the letters.
+// seconds, like ink suspended in water, then gather slowly into the letters;
+// only then does the tagline bleed in (js/ink.js).
 // The whole sequence stays under 5 seconds, so it needs no pause control, and
 // it's skipped under "reduce motion".
 //
@@ -295,6 +296,17 @@
     if (overlay) overlay.remove();
     overlay = null;
     box.classList.remove("is-assembling");
+    formed();
+  }
+
+  // Tell the page the wordmark has formed (js/ink.js waits for this before
+  // bleeding in the tagline): an attribute for scripts that start later, an
+  // event for those already waiting
+  function formed() {
+    var root = document.documentElement;
+    if (root.hasAttribute("data-wordmark")) return;
+    root.setAttribute("data-wordmark", "formed");
+    document.dispatchEvent(new CustomEvent("wordmark:formed"));
   }
 
   function start() {
@@ -302,6 +314,7 @@
     box.classList.add("is-drawn");
     var r = render();
     if (r && animate) assemble(r);
+    else formed();
 
     // Later size changes redraw the finished wordmark; the animation never replays
     var queued = false;
