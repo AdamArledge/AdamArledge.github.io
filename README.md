@@ -12,7 +12,8 @@ css/styles.css        all styles; design tokens at the top (:root)
 js/main.js            mobile menu and photo viewer
 js/wordmark.js        draws the hero wordmark in halftone dots and plays its opening assembly
 js/ink.js             the tagline's ink-bleed entrance
-images/               social preview image; Adam's photos go in images/work/ (see images/README.md)
+js/bloom.js           the dahlia's one-time bloom in the Services section
+images/               social preview image; the dahlia video and stills in images/bloom/; Adam's photos go in images/work/ (see images/README.md)
 assets/svg/           favicon
 assets/wordmark/      the wordmark as standalone SVGs (line, stack, small) for use elsewhere
 ```
@@ -94,6 +95,8 @@ node scripts/build.mjs
 The heading's text is real for screen readers and search engines ("AAHairArtistry"); the SVGs and canvases are decorative.
 
 **Tagline:** "Sharp Cuts. Loud Color. Never Boring." (`business.tagline` in `content/site.mjs`). Once the hero wordmark has formed, each phrase bleeds in like ink on paper: it arrives as a swollen, feathered blot with fibrous edges and dries to crisp letters in about 1.3 seconds, the three phrases 0.3 seconds apart, all done about 2 seconds after the wordmark lands (so about 5 seconds after the page opens), and readable well before that. On phones it's sized to fit the screen width on one line (about 22px tall at 320px wide, 27px at 390px); from 40em it returns to the larger display size. The build splits the tagline into phrases at commas and full stops and writes one SVG filter per phrase into the page; `js/ink.js` starts them and removes them when they finish, so the text ends up as ordinary text. It's skipped under "reduce motion", and the tagline shows anyway after 5 seconds if the script never runs. `js/wordmark.js` signals the moment the wordmark forms (a `wordmark:formed` event and a `data-wordmark` attribute on `<html>`); if that never comes, `js/ink.js` starts after 4 seconds anyway. The strength of the bleed is the `values` in `inkAnimate` in `scripts/build.mjs` (spread, blur and edge roughness at the start, at 35% and at the end).
+
+**Dahlia (decoration):** a flower drawn in digits, in the Services section: beside the services list on wide screens, small and light next to the heading on phones. It blooms once (about 5.5 seconds) when the visitor scrolls it into view, never on its own during the page's opening, then rests in full bloom; with "reduce motion" on or without JavaScript it shows the full-bloom still. The video is only downloaded at that point (about 470 KB WebM, 600 KB MP4 for Safari). The page's cream is baked into the video and stills (`images/bloom/`), so they sit seamlessly on the background. It was made from the owner-supplied animated GIF (9.5 MB): cropped to the flower, every second frame, cream applied, re-encoded with ffmpeg; `js/bloom.js` plays it.
 
 **Fonts** (Google Fonts): Anton for section headings, DM Sans for navigation, body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
 
