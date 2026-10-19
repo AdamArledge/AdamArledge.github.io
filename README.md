@@ -6,13 +6,12 @@ One-page site for AAHairArtistry: hair by Adam Arledge, inside Ideation Spa, 104
 content/site.mjs      ALL editable business content (booking, services, links, photos, reviews)
 templates/index.html  page layout and fixed copy, with {{ }} slots filled from site.mjs
 scripts/build.mjs     writes index.html from the two files above (no dependencies)
-scripts/wordmark.py   generates the banded hero wordmark (only when its design changes)
 index.html            GENERATED: what GitHub Pages serves. Don't edit it by hand.
 css/styles.css        all styles; design tokens at the top (:root)
 js/main.js            mobile menu and photo viewer
+js/wordmark.js        draws the hero wordmark as halftone dots
 images/               social preview image; Adam's photos go in images/work/ (see images/README.md)
 assets/svg/           favicon
-assets/wordmark/      the banded wordmark as standalone SVGs (line.svg, stack.svg) for reuse elsewhere
 ```
 
 ## Editing content
@@ -68,18 +67,13 @@ What appears automatically once filled in:
 
 ## Design system
 
-**Direction:** editorial punk. Warm cream paper, near-black ink, a burgundy banded wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
+**Direction:** editorial punk. Warm cream paper, near-black ink, a burgundy halftone wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
 
-**Wordmark:** "AAhairartistry" built from thick, rounded horizontal bands with narrow gaps that bend in a gentle wave through the word, in burgundy on cream. It's drawn as SVG (not a font), shown on one line on wide screens and stacked "AAhair / artistry" on phones; the heading text is still real text for screen readers and search engines. The header and footer use a plain DM Sans logotype, because below about 300px wide the bands blur together. To change the wordmark's spelling, band count, gap or wave, edit `VARIANTS` in `scripts/wordmark.py`, then:
+**Wordmark:** "AAhairartistry" as a printed halftone: a grid of round burgundy dots that swell and run together inside the letters (leaving small light holes) and shrink to specks at the edges. `js/wordmark.js` draws it into a canvas when the page loads, on one line on wide screens and stacked "AAhair / artistry" on narrow ones, redrawing sharply at any size. The heading's text stays real for screen readers and search engines; without JavaScript the name shows as plain type in the same font. The header and footer use the plain type, since the dots need size to read.
 
-```bash
-python3 scripts/wordmark.py --font path/to/Rubik-ExtraBold.ttf   # needs Pillow + numpy
-node scripts/build.mjs
-```
+The letters are **SF Pro Rounded** (Heavy/Black) on iPhone, iPad and Mac, through the CSS `ui-rounded` font keyword. Apple's license doesn't allow SF Pro Rounded to be embedded on a website, so other devices (Android, Windows) get **Nunito**, a free rounded font, requested from Google Fonts for just the wordmark's letters. The dot size, density and texture are the constants at the top of `js/wordmark.js`; `CELLS_PER_CAP` is the main legibility control (fewer rows = bigger dots, harder to read).
 
-Rubik ExtraBold (Google Fonts, SIL Open Font License) is the letter skeleton; its two-story "a" keeps "hair" and "artistry" readable once banded.
-
-**Fonts** (Google Fonts): Anton for section headings, DM Sans for navigation, body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
+**Fonts** (Google Fonts): the rounded wordmark face above, Anton for section headings, DM Sans for navigation, body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
 
 **Tokens** live at the top of `css/styles.css`: color, type scale, spacing (8 / 16 / 24 / 32 / 48 / 64 / 96), one image radius (6px), one button radius (4px).
 
