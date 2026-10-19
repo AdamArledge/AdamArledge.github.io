@@ -4,8 +4,10 @@
 // Pro Rounded where the system has it (Apple devices, through the ui-rounded
 // font keyword), otherwise in Nunito.
 //
-// On page load the dots start scattered around the wordmark and are drawn
-// into place in about a second (skipped under "reduce motion").
+// On page load the dots drift loose around the wordmark for a couple of
+// seconds, like ink suspended in water, then gather slowly into the letters.
+// The whole sequence stays under 5 seconds, so it needs no pause control, and
+// it's skipped under "reduce motion".
 //
 // The heading's text stays in the page for screen readers and search engines;
 // the canvases are decoration. Without JavaScript the name shows as type.
@@ -24,11 +26,16 @@
   var TEXTURE = 0.12;       // random variation in dot size inside the letters
   var EMBOLDEN = 0.01;      // extra weight around each letter, in em, so the strokes hold several dots
 
-  // Assembly animation: every piece finishes by STAGGER + MOVE_MAX ms
-  var STAGGER = 180;        // latest start, in ms; pieces further right start a little later
-  var MOVE_MIN = 620;       // shortest and longest travel time, in ms
-  var MOVE_MAX = 820;
+  // Assembly animation, in ms. Every piece has landed by
+  // FLOAT + GATHER_STAGGER + GATHER_MAX (keep it under 5000).
+  var FADE_IN = 400;        // the loose dots fade up as the page opens
+  var FLOAT = 2400;         // how long the dots drift before any start to gather
+  var GATHER_STAGGER = 700; // latest start; the centre of the word gathers first
+  var GATHER_MIN = 1300;    // shortest and longest gathering time
+  var GATHER_MAX = 1700;
   var SCATTER = 1.1;        // how far pieces start from home, in capital-letter heights
+  var DRAW_IN = 0.18;       // share of that distance the cloud closes while still floating
+  var DRIFT = 0.28;         // how far they wander while floating, in capital-letter heights
   var animate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   canvas.className = "hero__dots";
@@ -197,7 +204,7 @@
     var cap = s * CELLS_PER_CAP;
     // Overlay margins, in device pixels: generous to the sides, small above and
     // below so the pieces stay clear of the text around the heading
-    var MX = Math.round(cap * 0.8), MY = Math.round(cap * 0.35);
+    var MX = Math.round(cap * 0.9), MY = Math.round(cap * 0.3);
     var OW = r.W + 2 * MX, OH = r.H + 2 * MY;
 
     overlay = document.createElement("canvas");
@@ -230,30 +237,49 @@
         var d = cap * SCATTER * (0.25 + 0.75 * Math.pow(Math.random(), 1.4));
         var dx = Math.max(-hx, Math.min(OW - w - hx, Math.cos(a) * d * 1.4));
         var dy = Math.max(-hy, Math.min(OH - h - hy, Math.sin(a) * d * 0.75));
+        var fromCentre = Math.abs(hx + w / 2 - OW / 2) / (OW / 2);
         pieces.push({
           sx: x0, sy: y0, w: w, h: h, hx: hx, hy: hy, dx: dx, dy: dy,
+          // Drift: two slow sine waves per axis with random speeds and phases
+          wx: drift(cap), wy: drift(cap * 0.7),
           turn: (Math.random() - 0.5) * 1.2,      // the path curves in slightly, it doesn't spin
-          from: 0.45 + Math.random() * 0.35,      // starts smaller, like a droplet
-          delay: STAGGER * (0.5 * (hx / OW) + 0.5 * Math.random()),
-          move: MOVE_MIN + Math.random() * (MOVE_MAX - MOVE_MIN)
+          from: 0.45 + Math.random() * 0.35,      // smaller while loose, like a droplet
+          pulse: Math.random() * 2 * Math.PI,     // phase of a slight swelling while floating
+          delay: FLOAT + GATHER_STAGGER * (0.55 * fromCentre + 0.45 * Math.random()),
+          move: GATHER_MIN + Math.random() * (GATHER_MAX - GATHER_MIN)
         });
       }
     }
 
+    function drift(range) {
+      var a = range * DRIFT;
+      return [a * (0.5 + 0.5 * Math.random()), 0.0016 + Math.random() * 0.0022, Math.random() * 6.3,
+              a * (0.2 + 0.3 * Math.random()), 0.0035 + Math.random() * 0.003, Math.random() * 6.3];
+    }
+    function wave(d, t) {
+      return d[0] * Math.sin(d[1] * t + d[2]) + d[3] * Math.sin(d[4] * t + d[5]);
+    }
+
     function frame(t) {
       ctx.clearRect(0, 0, OW, OH);
+      ctx.globalAlpha = 0.15 + 0.85 * Math.min(1, t / FADE_IN);
+      // While floating, the whole cloud slowly draws in towards the word
+      var f = Math.min(1, t / FLOAT), near = 1 - DRAW_IN * f * f * (3 - 2 * f);
       var moving = false;
       for (var k = 0; k < pieces.length; k++) {
         var p = pieces[k];
         var u = Math.min(1, Math.max(0, (t - p.delay) / p.move));
         if (u < 1) moving = true;
-        var rest = Math.pow(1 - u, 4); // ease out: fast start, gentle landing
+        // How far from home, 1 to 0. Starts and ends at rest, so a piece eases
+        // out of its drift, glides, then settles softly into place.
+        var rest = Math.pow(1 - u, 3) * (1 + 3 * u);
         var c = Math.cos(p.turn * rest), sn = Math.sin(p.turn * rest);
-        var x = p.dx * rest, y = p.dy * rest;
-        var size = 1 - (1 - p.from) * rest;
+        var x = (p.dx * near + wave(p.wx, t)) * rest, y = (p.dy * near + wave(p.wy, t)) * rest;
+        var size = 1 - (1 - p.from * (1 + 0.12 * Math.sin(0.004 * t + p.pulse))) * rest;
         var w = p.w * size, h = p.h * size;
-        ctx.drawImage(art.canvas, p.sx, p.sy, p.w, p.h,
-          p.hx + x * c - y * sn + (p.w - w) / 2, p.hy + x * sn + y * c + (p.h - h) / 2, w, h);
+        var px = Math.max(0, Math.min(OW - w, p.hx + x * c - y * sn + (p.w - w) / 2));
+        var py = Math.max(0, Math.min(OH - h, p.hy + x * sn + y * c + (p.h - h) / 2));
+        ctx.drawImage(art.canvas, p.sx, p.sy, p.w, p.h, px, py, w, h);
       }
       return moving;
     }
