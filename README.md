@@ -6,12 +6,15 @@ One-page site for AAHairArtistry: hair by Adam Arledge, inside Ideation Spa, 104
 content/site.mjs      ALL editable business content (booking, services, links, photos, reviews)
 templates/index.html  page layout and fixed copy, with {{ }} slots filled from site.mjs
 scripts/build.mjs     writes index.html from the two files above (no dependencies)
+scripts/wordmark.py   draws the wordmark SVGs (only when its design changes)
 index.html            GENERATED: what GitHub Pages serves. Don't edit it by hand.
 css/styles.css        all styles; design tokens at the top (:root)
 js/main.js            mobile menu and photo viewer
-js/wordmark.js        draws the hero wordmark as halftone dots
+js/wordmark.js        draws the hero wordmark in halftone dots and plays its opening assembly
+js/ink.js             the tagline's ink-bleed entrance
 images/               social preview image; Adam's photos go in images/work/ (see images/README.md)
 assets/svg/           favicon
+assets/wordmark/      the wordmark as standalone SVGs (line, stack, small) for use elsewhere
 ```
 
 ## Editing content
@@ -67,15 +70,32 @@ What appears automatically once filled in:
 
 ## Design system
 
-**Direction:** editorial punk. Warm cream paper, near-black ink, a burgundy halftone wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
+**Direction:** editorial punk. Warm cream paper, near-black ink, a burgundy halftone-dot wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
 
-**Wordmark:** "AAhairartistry" as a printed halftone: a grid of round burgundy dots that swell and run together inside the letters (leaving small light holes) and shrink to specks at the edges. `js/wordmark.js` draws it into a canvas when the page loads, on one line on wide screens and stacked "AAhair / artistry" on narrow ones, redrawing sharply at any size. On each page load the dots float loose around the wordmark for about two and a half seconds, drifting and slowly drawing in, then gather into the letters from the centre outwards; the whole sequence takes about 4.7 seconds. The pieces are tiles cut from the finished wordmark, so they land pixel for pixel on it. The sequence is kept under 5 seconds on purpose: accessibility guidelines (WCAG 2.2.2) require a pause control for motion that starts on its own and lasts longer. It plays once (not on scroll or resize) and is skipped for visitors who've turned on "reduce motion". The wordmark's box is reserved by CSS from the first paint, so nothing on the page moves. The timing is set by `FLOAT`, `GATHER_STAGGER`, `GATHER_MIN`, `GATHER_MAX`, `DRIFT` and `SCATTER` at the top of `js/wordmark.js`.
+**Wordmark:** "AAhairartistry" as custom lettering, modelled on the character of a reference logo ("CIRCA" by SLAPS): very heavy, broad letters with a strong forward slant, soft rounded outer contours, small softened counters, and tight spacing where A–A, h–a and r–t fuse into one shape while every other pair keeps the same narrow gap. It's SVG, not a font, in burgundy on cream (cream on ink in the footer). In the hero it's printed in halftone dots (below); the header and footer show it solid, because dots don't read at 20px. It comes in three versions:
 
-The heading's text stays real for screen readers and search engines; without JavaScript the name shows as plain type in the same font (if the script fails to load, the type appears after 3 seconds). The header and footer use the plain type, since the dots need size to read.
+| Version | Used for |
+|---|---|
+| `line` | hero, one line, from 40em (640px) wide |
+| `stack` | hero on phones: "AAhair" over "artistry", same letter proportions |
+| `small` | header and footer: wider gaps, smaller rounding and fewer joins, so it stays open at 12–22px tall |
 
-The letters are **SF Pro Rounded** (Heavy/Black) on iPhone, iPad and Mac, through the CSS `ui-rounded` font keyword. Apple's license doesn't allow SF Pro Rounded to be embedded on a website, so other devices (Android, Windows) get **Nunito**, a free rounded font, requested from Google Fonts for just the wordmark's letters. The dot size, density and texture are the constants at the top of `js/wordmark.js`; `CELLS_PER_CAP` is the main legibility control (fewer rows = bigger dots, harder to read).
+The letters start from **Unbounded Black** (Google Fonts, SIL Open Font License, which allows modified versions like this one) and are reshaped by `scripts/wordmark.py`: slanted 14°, outer corners rounded, inside corners softened, letters placed one at a time (joined pairs overlap; the rest are pushed to an exact clear gap), soft fillets only where letters join, then traced to smooth curves. The reference's actual typeface isn't known, so this is drawn to its character, not matched to its font. To change the spelling, slant, joins, spacing or rounding, edit `VARIANTS` in `scripts/wordmark.py`, then:
 
-**Fonts** (Google Fonts): the rounded wordmark face above, Anton for section headings, DM Sans for navigation, body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
+```bash
+python3 scripts/wordmark.py --font path/to/Unbounded-Black.ttf   # needs Pillow, numpy, scipy, scikit-image
+node scripts/build.mjs
+```
+
+**Halftone dots (hero):** `js/wordmark.js` fills the wordmark's SVG outline into a hidden canvas, measures how much ink falls in each cell of a dot grid (14 rows of dots per capital height), and draws one round dot per cell: inside the letters the dots swell and run together, leaving small light holes; at the edges they shrink to specks. It's drawn for the screen's pixel density and redrawn when the layout changes. The solid SVG stays underneath, hidden: it reserves the space from the first paint and is what shows without JavaScript (or after 3 seconds if the script fails). `CELLS_PER_CAP`, `DENSITY` and `TEXTURE` at the top of `js/wordmark.js` set the dot size, darkness and irregularity.
+
+**Opening assembly:** on each page load the dots float loose around the wordmark for about two and a half seconds, drifting and slowly drawing in, then gather into the letters from the centre outwards; the whole sequence takes about 4.7 seconds. The pieces are tiles cut from the finished dot image, so they land pixel for pixel on it. It stays under 5 seconds on purpose: accessibility guidelines (WCAG 2.2.2) require a pause control for motion that starts on its own and lasts longer. It plays once (not on scroll or resize), only in the hero (the header logo stays still), and visitors with "reduce motion" on get the finished dots straight away. The timing is set by `FLOAT`, `GATHER_STAGGER`, `GATHER_MIN`, `GATHER_MAX`, `DRIFT` and `SCATTER` at the top of `js/wordmark.js`.
+
+The heading's text is real for screen readers and search engines ("AAHairArtistry"); the SVGs and canvases are decorative.
+
+**Tagline:** "Sharp Cuts. Loud Color. Never Boring." (`business.tagline` in `content/site.mjs`). On load each phrase bleeds in like ink on paper: it arrives as a swollen, feathered blot with fibrous edges and dries to crisp letters in about 1.8 seconds, the three phrases 0.42 seconds apart, all done by about 2.7 seconds and readable well before that. The build splits the tagline into phrases at commas and full stops and writes one SVG filter per phrase into the page; `js/ink.js` starts them and removes them when they finish, so the text ends up as ordinary text. It's skipped under "reduce motion", and the tagline shows anyway after 3 seconds if the script never runs. The strength of the bleed is the `values` in `inkAnimate` in `scripts/build.mjs` (spread, blur and edge roughness at the start, at 35% and at the end).
+
+**Fonts** (Google Fonts): Anton for section headings, DM Sans for navigation, body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
 
 **Tokens** live at the top of `css/styles.css`: color, type scale, spacing (8 / 16 / 24 / 32 / 48 / 64 / 96), one image radius (6px), one button radius (4px).
 

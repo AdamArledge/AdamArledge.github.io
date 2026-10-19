@@ -2,7 +2,7 @@
 
 | File | Used for |
 |---|---|
-| `og-image.jpg` | Link preview on iMessage, Instagram, Facebook and similar apps (1200 × 630). A typographic card with the halftone wordmark (drawn in Nunito, since it was made on a non-Apple machine); swap in a hero photo later if you like, keeping the size exactly 1200 × 630. |
+| `og-image.jpg` | Link preview on iMessage, Instagram, Facebook and similar apps (1200 × 630). A typographic card with the halftone wordmark and tagline; swap in a hero photo later if you like, keeping the size exactly 1200 × 630. |
 
 ## Adding Adam's work
 

@@ -1,8 +1,8 @@
-// Halftone wordmark: draws the hero name as a grid of round printer's dots.
-// Inside the letters the dots swell until they run together, leaving small
-// light holes; at the edges they shrink to specks. The letters are set in SF
-// Pro Rounded where the system has it (Apple devices, through the ui-rounded
-// font keyword), otherwise in Nunito.
+// Halftone wordmark: draws the hero wordmark as a grid of round printer's
+// dots. Inside the letters the dots swell until they run together, leaving
+// small light holes; at the edges they shrink to specks. The letter shapes are
+// the wordmark's own SVG (scripts/wordmark.py), which stays in the page as the
+// solid fallback and reserves the space.
 //
 // On page load the dots drift loose around the wordmark for a couple of
 // seconds, like ink suspended in water, then gather slowly into the letters.
@@ -10,21 +10,20 @@
 // it's skipped under "reduce motion".
 //
 // The heading's text stays in the page for screen readers and search engines;
-// the canvases are decoration. Without JavaScript the name shows as type.
+// the canvases are decoration. Without JavaScript the solid SVG shows.
 (function () {
   "use strict";
 
-  var title = document.querySelector("[data-halftone]");
-  var box = title && title.querySelector(".hero__art"); // sized by CSS before this runs
+  var box = document.querySelector(".hero__art"); // holds the SVGs (line and stack)
   var canvas = document.createElement("canvas");
-  if (!box || !canvas.getContext) return;
+  if (!box || !canvas.getContext || !window.Path2D) return;
+  var title = box.parentNode;
 
-  var FONT = '900 160px ui-rounded, "SF Pro Rounded", Nunito, sans-serif';
-  var LINES = title.getAttribute("data-halftone").split("|"); // stacked lines on narrow screens
   var CELLS_PER_CAP = 14;   // dot rows across a capital letter's height (fewer = coarser, less legible)
   var DENSITY = 0.80;       // ink coverage inside the letters (1 = solid)
   var TEXTURE = 0.12;       // random variation in dot size inside the letters
-  var EMBOLDEN = 0.01;      // extra weight around each letter, in em, so the strokes hold several dots
+  var CAP = 100;            // capital height in the SVG's units (scripts/wordmark.py)
+  var MASK = 1.6;           // mask pixels per SVG unit when measuring the letters
 
   // Assembly animation, in ms. Every piece has landed by
   // FLOAT + GATHER_STAGGER + GATHER_MAX (keep it under 5000).
@@ -50,37 +49,23 @@
     };
   }
 
-  // Set the lines as solid type and measure how much ink falls in each cell
-  // of the dot grid. Returns the grid's size and each cell's tone (0 to 1).
-  function tones(lines) {
+  // Fill the wordmark's outline and measure how much ink falls in each cell of
+  // the dot grid. The grid overhangs the SVG's box by two cells on every side
+  // for the fringe of small dots. Returns the grid's size, its offset from the
+  // SVG's box (in SVG units) and each cell's tone (0 to 1).
+  function tones(svg) {
+    var vb = svg.viewBox.baseVal;
+    var shape = document.querySelector(svg.querySelector("use").getAttribute("href") + " path");
+    var cell = CAP / CELLS_PER_CAP;
+    var cols = Math.ceil(vb.width / cell) + 4, rows = Math.ceil(vb.height / cell) + 4;
+    var gx = (vb.width - cols * cell) / 2, gy = (vb.height - rows * cell) / 2;
+    var unit = cell * MASK, W = Math.ceil(cols * unit), H = Math.ceil(rows * unit);
     var ctx = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
-    ctx.font = FONT;
-    var cell = ctx.measureText("H").actualBoundingBoxAscent / CELLS_PER_CAP;
-    var pad = cell * 2 + EMBOLDEN * 160;
-    var gap = cell * 2.5;
-    var m = lines.map(function (t) { return ctx.measureText(t); });
-    var w = 0, h = pad, baselines = [];
-    m.forEach(function (lm, i) {
-      w = Math.max(w, lm.actualBoundingBoxLeft + lm.actualBoundingBoxRight);
-      h += (i ? gap : 0) + lm.actualBoundingBoxAscent;
-      baselines.push(h);
-      h += lm.actualBoundingBoxDescent;
-    });
-    var cols = Math.ceil((w + pad * 2) / cell);
-    var rows = Math.ceil((h + pad) / cell);
-    var W = Math.ceil(cols * cell), H = Math.ceil(rows * cell);
-    // Centre the ink in the grid
-    var ox = (cols * cell - w) / 2, oy = (rows * cell - h - pad) / 2;
-
     ctx.canvas.width = W;
     ctx.canvas.height = H;
-    ctx.font = FONT;
-    ctx.lineWidth = EMBOLDEN * 160 * 2;
-    ctx.lineJoin = "round";
-    lines.forEach(function (t, i) {
-      ctx.fillText(t, ox + m[i].actualBoundingBoxLeft, oy + baselines[i]);
-      ctx.strokeText(t, ox + m[i].actualBoundingBoxLeft, oy + baselines[i]);
-    });
+    ctx.setTransform(MASK, 0, 0, MASK, -gx * MASK, -gy * MASK);
+    ctx.fill(new Path2D(shape.getAttribute("d")), "evenodd");
+    cell = unit; // from here on, in mask pixels
     var px = ctx.getImageData(0, 0, W, H).data;
 
     // Summed-area table of the ink, for fast averages over each cell
@@ -113,7 +98,7 @@
         tone[j * cols + i] = v < 0.04 ? 0 : v;
       }
     }
-    return { cols: cols, rows: rows, tone: tone };
+    return { cols: cols, rows: rows, gx: gx, gy: gy, tone: tone };
   }
 
   // Draw the dots at s device pixels per cell, into a new canvas. The tone is
@@ -169,26 +154,36 @@
     return { canvas: art, data: data, s: s };
   }
 
-  // Size the canvas to the box CSS reserved, and draw the finished wordmark
-  // centred in it. Returns what the animation needs, or null if unchanged.
+  // Draw the dots over the SVG on screen (line or stack, whichever CSS shows),
+  // sized from its box. Returns what the animation needs, or null if unchanged.
   var grids = {};
   var lastKey = "";
+  var place = { x: 0, y: 0 }; // the canvas's offset in the box, in CSS pixels
   function render() {
-    var lines = getComputedStyle(box).getPropertyValue("--wordmark-layout").trim() === "line" ? [LINES.join("")] : LINES;
+    var svg = Array.prototype.filter.call(box.querySelectorAll(".wordmark-art"), function (el) {
+      return getComputedStyle(el).display !== "none";
+    })[0];
+    if (!svg) return null;
     var ratio = window.devicePixelRatio || 1;
-    var W = Math.round(box.clientWidth * ratio), H = Math.round(box.clientHeight * ratio);
+    var vb = svg.viewBox.baseVal, rect = svg.getBoundingClientRect(), outer = box.getBoundingClientRect();
     var color = (getComputedStyle(title).color.match(/\d+/g) || [0, 0, 0]).map(Number);
-    var key = lines + "/" + W + "x" + H + "/" + color;
-    if (!W || !H || key === lastKey) return null;
+    var key = svg.className.baseVal + "/" + rect.width + "/" + ratio + "/" + color;
+    if (!rect.width || key === lastKey) return null;
     lastKey = key;
-    var id = lines.join("|");
-    var grid = grids[id] || (grids[id] = tones(lines));
-    var art = paint(grid, Math.min(W / grid.cols, H / grid.rows), color);
-    var ox = Math.round((W - art.canvas.width) / 2), oy = Math.round((H - art.canvas.height) / 2);
+    var grid = grids[svg.className.baseVal] || (grids[svg.className.baseVal] = tones(svg));
+    var k = rect.width / vb.width; // CSS pixels per SVG unit
+    var art = paint(grid, CAP / CELLS_PER_CAP * k * ratio, color);
+    var W = art.canvas.width, H = art.canvas.height;
+    place.x = rect.left - outer.left + grid.gx * k;
+    place.y = rect.top - outer.top + grid.gy * k;
     canvas.width = W;
     canvas.height = H;
-    canvas.getContext("2d").drawImage(art.canvas, ox, oy);
-    return { art: art, ox: ox, oy: oy, W: W, H: H, ratio: ratio };
+    canvas.style.left = place.x + "px";
+    canvas.style.top = place.y + "px";
+    canvas.style.width = W / ratio + "px";
+    canvas.style.height = H / ratio + "px";
+    canvas.getContext("2d").drawImage(art.canvas, 0, 0);
+    return { art: art, ox: 0, oy: 0, W: W, H: H, ratio: ratio };
   }
 
   // ---------- Assembly ----------
@@ -211,8 +206,8 @@
     overlay.className = "hero__scatter";
     overlay.width = OW;
     overlay.height = OH;
-    overlay.style.left = -MX / r.ratio + "px";
-    overlay.style.top = -MY / r.ratio + "px";
+    overlay.style.left = place.x - MX / r.ratio + "px";
+    overlay.style.top = place.y - MY / r.ratio + "px";
     overlay.style.width = OW / r.ratio + "px";
     overlay.style.height = OH / r.ratio + "px";
     var ctx = overlay.getContext("2d");
@@ -304,7 +299,7 @@
 
   function start() {
     box.appendChild(canvas);
-    title.classList.add("is-halftone");
+    box.classList.add("is-drawn");
     var r = render();
     if (r && animate) assemble(r);
 
@@ -324,15 +319,5 @@
     else window.addEventListener("resize", schedule);
   }
 
-  // Wait for the font, so the dots aren't drawn from a fallback face, but not
-  // past the point where the CSS gives up and shows the plain type (3s)
-  var text = LINES.join("");
-  var started = false;
-  var once = function () { if (!started) { started = true; start(); } };
-  if (document.fonts && document.fonts.load) {
-    document.fonts.load(FONT, text).then(once, once);
-    setTimeout(once, 2500);
-  } else {
-    once();
-  }
+  start();
 })();
