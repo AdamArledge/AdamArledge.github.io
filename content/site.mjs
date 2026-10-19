@@ -11,8 +11,6 @@
 export default {
   business: {
     name: "AAHairArtistry",
-    // How the name breaks across two lines in the hero on phones
-    wordmarkLines: ["AAHair", "Artistry"],
     stylist: "Adam Arledge",
     tagline: "Sharp cuts, loud color, zero boring.",
     summary: "Haircuts, color, highlights and balayage, and vivid color by Adam Arledge.",

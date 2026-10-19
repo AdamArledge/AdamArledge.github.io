@@ -1,22 +1,23 @@
 /* ==========================================================================
    AAHairArtistry — editorial punk
-   Warm ivory paper, near-black ink, one cobalt accent, one four-point sparkle.
+   Warm cream paper, near-black ink, a burgundy halftone wordmark, one cobalt accent.
    Mobile-first. Breakpoints: 40em (640px), 56.25em (900px).
    ========================================================================== */
 
 /* ---------- Design tokens ---------- */
 :root {
   /* Color. Contrast ratios are against the surface each is used on. */
-  --ivory: #F2EFE8;          /* main reading surface */
-  --stone: #E4DFD3;          /* supporting neutral for grouping */
-  --ink: #171715;            /* text and the dark section (15.6:1 on ivory) */
-  --ink-muted: #5C5A54;      /* secondary text (6.0:1 on ivory, 5.2:1 on stone) */
-  --cobalt: #3755EE;         /* actions and emphasis: white text on it 5.7:1, as text on ivory 4.95:1, edge against ink 3.2:1 */
+  --cream: #F1EADF;          /* main reading surface */
+  --stone: #E6DDCE;          /* supporting neutral for grouping */
+  --burgundy: #4A1C24;       /* the wordmark (11.9:1 on cream) */
+  --ink: #171715;            /* text and the dark section (15.0:1 on cream) */
+  --ink-muted: #5C5A54;      /* secondary text (5.8:1 on cream, 5.1:1 on stone) */
+  --cobalt: #3755EE;         /* actions and emphasis: white text on it 5.7:1, as text on cream 4.75:1, edge against ink 3.2:1 */
   --cobalt-deep: #2A44C8;    /* hover for cobalt fills */
   --white: #FFFFFF;
 
   /* On the ink surface */
-  --on-ink: #F2EFE8;
+  --on-ink: #F1EADF;         /* 15.0:1 on ink */
   --on-ink-muted: #B5B1A7;   /* 8.4:1 on ink */
   --on-ink-link: #9DADFF;    /* 8.4:1 on ink (cobalt itself is only 3.2:1 there) */
 
@@ -33,6 +34,8 @@
   --font-display: "Anton", "Impact", "Arial Narrow Bold", sans-serif;
   --font-body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-accent: "Instrument Serif", Georgia, "Times New Roman", serif;
+  /* The wordmark: SF Pro Rounded on Apple devices (ui-rounded), Nunito elsewhere */
+  --font-rounded: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif;
 
   --text-sm: 0.9375rem;                                  /* 15px */
   --text-base: clamp(1.0625rem, 1rem + 0.2vw, 1.125rem); /* 17 → 18px */
@@ -82,7 +85,7 @@ html {
 
 body {
   margin: 0;
-  background: var(--ivory);
+  background: var(--cream);
   color: var(--ink);
   font-family: var(--font-body);
   font-size: var(--text-base);
@@ -120,7 +123,7 @@ a:hover { text-decoration-thickness: 2px; }
   z-index: 100;
   padding: var(--s1) var(--s2);
   background: var(--ink);
-  color: var(--ivory);
+  color: var(--cream);
   font-weight: 700;
   border-radius: var(--radius-btn);
   transform: translateY(-200%);
@@ -169,7 +172,7 @@ a:hover { text-decoration-thickness: 2px; }
 .btn--primary:active { background: var(--ink); }
 
 .btn--secondary { background: transparent; color: var(--ink); border-color: var(--ink); }
-.btn--secondary:hover { background: var(--ink); color: var(--ivory); }
+.btn--secondary:hover { background: var(--ink); color: var(--cream); }
 .btn--secondary:active { background: var(--cobalt-deep); border-color: var(--cobalt-deep); color: var(--white); }
 
 .btn--sm { min-height: 2.75rem; padding: 0.5rem 1rem; font-size: 0.9375rem; }
@@ -207,24 +210,15 @@ a:hover { text-decoration-thickness: 2px; }
   gap: var(--s2) var(--s3);
 }
 
-/* ---------- Wordmark ---------- */
+/* ---------- Wordmark ----------
+   Set in the rounded face. The hero draws it as halftone dots (js/wordmark.js);
+   the header and footer keep it as plain type, since dots need size to read. */
 .wordmark {
-  display: inline-flex;
-  align-items: flex-start;
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  line-height: 1;
-  letter-spacing: 0.01em;
-  color: var(--ink);
+  font: 800 1.25rem/1 var(--font-rounded);
+  letter-spacing: -0.01em;
+  color: var(--burgundy);
   text-decoration: none;
   white-space: nowrap;
-}
-.wordmark__spark {
-  width: 0.5em;
-  height: 0.5em;
-  margin: -0.08em 0 0 0.06em;
-  color: var(--cobalt);
-  flex: none;
 }
 
 /* ---------- Header ---------- */
@@ -232,7 +226,7 @@ a:hover { text-decoration-thickness: 2px; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--ivory);
+  background: var(--cream);
   border-bottom: 1px solid var(--rule);
 }
 /* Short screens (landscape phones) or large text settings: em here follows the
@@ -294,7 +288,7 @@ a:hover { text-decoration-thickness: 2px; }
   left: 0;
   right: 0;
   padding: var(--s1) var(--gutter) var(--s3);
-  background: var(--ivory);
+  background: var(--cream);
   border-bottom: 1px solid var(--rule);
   box-shadow: 0 16px 24px -20px rgba(23, 23, 21, 0.5);
 }
@@ -368,27 +362,46 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 .hero__place span { display: inline-block; }
 .hero__dot { margin-inline: 0.6em; color: var(--cobalt); }
 
-/* The masthead: two lines on phones, one line once there is room.
-   Sized from the viewport so it always fits the column. */
+/* The masthead: the wordmark as halftone dots, drawn into canvases by
+   js/wordmark.js, which take their dot color from this element's color.
+   Without JavaScript, .hero__name shows as type. */
+.hero { overflow: hidden; } /* the assembling dots start slightly outside the wordmark */
 .hero__title {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  font-family: var(--font-display);
-  font-weight: 400;
-  font-size: min(calc((100vw - 2 * var(--gutter)) * 0.26), 8rem);
-  line-height: 0.96;
+  position: relative;
+  color: var(--burgundy);
   padding-bottom: var(--s2);
   border-bottom: var(--border) solid var(--rule-strong);
 }
-.hero__title-a { flex-basis: 100%; }
-.hero__spark {
-  width: 0.3em;
-  height: 0.3em;
-  margin: 0.03em 0 0 0.05em;
-  color: var(--cobalt);
-  flex: none;
+.hero__name {
+  display: block;
+  font: 900 clamp(3.25rem, 0.5rem + 11vw, 8.5rem)/1 var(--font-rounded);
+  letter-spacing: -0.01em;
 }
+/* html.halftone is set in the <head>. The wordmark's box is reserved at its
+   final size from the first paint, so nothing moves when the dots arrive, and
+   the plain type stays hidden meanwhile (shown after 3s if the script fails).
+   --wordmark-layout tells the script whether to set one line or two. */
+.hero__art { display: none; }
+.halftone .hero__art {
+  display: block;
+  position: relative;
+  width: 100%;
+  max-width: 24rem;
+  aspect-ratio: 343 / 185;
+  --wordmark-layout: stack;
+}
+.halftone .hero__name {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  animation: wordmark-fallback 0s 3s forwards;
+}
+@keyframes wordmark-fallback { to { visibility: visible; } }
+.hero__title.is-halftone .hero__name { display: none; }
+.hero__dots { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hero__art.is-assembling .hero__dots { visibility: hidden; }
+.hero__scatter { position: absolute; pointer-events: none; }
 
 .hero__body { display: grid; gap: var(--s3); padding-top: var(--s1); }
 .hero__tagline {
@@ -412,12 +425,7 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 }
 
 @media (min-width: 40em) {
-  .hero__title {
-    flex-wrap: nowrap;
-    font-size: min(calc((100vw - 2 * var(--gutter)) * 0.148), 10.5rem);
-    line-height: 0.9;
-  }
-  .hero__title-a { flex-basis: auto; }
+  .halftone .hero__art { max-width: 75rem; aspect-ratio: 1200 / 196; --wordmark-layout: line; }
 }
 @media (min-width: 56.25em) {
   .hero { padding-block: var(--s5) var(--s6); }
@@ -435,8 +443,7 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 @media (min-width: 56.25em) {
   .hero--photo .hero__inner { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: var(--s5); }
   .hero--photo .hero__place, .hero--photo .hero__title, .hero--photo .hero__body { grid-column: 1; }
-  .hero--photo .hero__title { flex-wrap: wrap; font-size: min(calc((100vw - 2 * var(--gutter)) * 0.15), 9rem); }
-  .hero--photo .hero__title-a { flex-basis: 100%; }
+  .halftone .hero--photo .hero__art { max-width: none; aspect-ratio: 343 / 185; --wordmark-layout: stack; }
   .hero--photo .hero__body { grid-template-columns: 1fr; }
   .hero--photo .hero__photo { grid-column: 2; grid-row: 1 / span 3; }
   .hero--photo .hero__photo img { height: 100%; }
@@ -633,7 +640,7 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   gap: var(--s3);
   align-content: start;
   padding: var(--s4) var(--s3);
-  background: var(--ivory);
+  background: var(--cream);
   color: var(--ink);
   border-radius: var(--radius);
 }
@@ -684,7 +691,7 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
   padding-block: var(--s4);
   border-top: 1px solid var(--rule-on-ink);
 }
-.site-footer .wordmark { color: var(--on-ink); font-size: 1.375rem; margin-bottom: var(--s1); }
+.site-footer .wordmark { color: var(--on-ink); margin-bottom: var(--s1); }
 .site-footer__links { display: flex; flex-wrap: wrap; gap: 0 var(--s3); }
 .site-footer a {
   display: inline-flex;

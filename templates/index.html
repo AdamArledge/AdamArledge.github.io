@@ -7,7 +7,7 @@
 
   <title>{{business.name}} | Hair by {{business.stylist}} in {{address.city}}, {{address.region}}</title>
   <meta name="description" content="{{metaDescription}}">
-  <meta name="theme-color" content="#F2EFE8">
+  <meta name="theme-color" content="#F1EADF">
   <link rel="canonical" href="{{business.siteUrl}}">
 
   <!-- Social previews -->
@@ -24,12 +24,18 @@
 
   <link rel="icon" href="assets/svg/favicon.svg" type="image/svg+xml">
 
-  <!-- Fonts: Anton (display), DM Sans (body and interface), Instrument Serif Italic (accent) -->
+  <!-- Fonts: Anton (display), DM Sans (body and interface), Instrument Serif Italic (accent).
+       Nunito draws the wordmark where SF Pro Rounded isn't available; it's
+       requested for just the wordmark's letters, so the file is tiny. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Anton&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&text=AAhairartistry&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
+  <!-- Lets the CSS reserve the hero wordmark's box and hide its plain-type
+       fallback until js/wordmark.js draws it (the type returns after 3s if it never does) -->
+  <script>document.documentElement.classList.add("halftone");</script>
 
   <!-- Business details for search engines, generated from content/site.mjs -->
   <script type="application/ld+json">
@@ -53,9 +59,7 @@
   <!-- ================= HEADER ================= -->
   <header class="site-header">
     <div class="container site-header__bar">
-      <a class="wordmark" href="#top" aria-label="{{business.name}}, back to top">
-        {{business.name}}<svg class="wordmark__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg>
-      </a>
+      <a class="wordmark" href="#top" aria-label="{{business.name}}, back to top">AAhairartistry</a>
 
       <nav class="nav" aria-label="Main">
         <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
@@ -81,7 +85,13 @@
       <div class="container hero__inner">
         <p class="hero__place"><span>{{address.city}}, {{address.region}}</span><span class="hero__dot" aria-hidden="true">&middot;</span><span>Inside {{business.studio}}</span></p>
 
-        <h1 class="hero__title" id="hero-title">{{{heroTitle}}}<svg class="hero__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg></h1>
+        <!-- js/wordmark.js draws the name as halftone dots in .hero__art, on one
+             line or as the two lines in data-halftone; without JavaScript it shows as type -->
+        <h1 class="hero__title" id="hero-title" data-halftone="AAhair|artistry">
+          <span class="visually-hidden">{{business.name}}</span>
+          <span class="hero__name" aria-hidden="true">AAhair<wbr>artistry</span>
+          <span class="hero__art" aria-hidden="true"></span>
+        </h1>
 
         <div class="hero__body">
           <p class="hero__tagline">{{{taglineHtml}}}</p>
@@ -162,7 +172,7 @@
   <!-- ================= FOOTER ================= -->
   <footer class="site-footer">
     <div class="container site-footer__inner">
-      <p class="wordmark wordmark--footer">{{business.name}}<svg class="wordmark__spark" viewBox="0 0 100 100" aria-hidden="true"><use href="#sparkle"/></svg></p>
+      <p class="wordmark wordmark--footer">AAhairartistry</p>
       <p class="site-footer__place">Inside {{business.studio}} &middot; {{address.street}}, {{address.city}}, {{address.region}} {{address.postalCode}}</p>
       <ul class="site-footer__links">
 {{{footerLinks}}}
@@ -172,5 +182,6 @@
   </footer>
 {{{lightbox}}}
   <script src="js/main.js" defer></script>
+  <script src="js/wordmark.js" defer></script>
 </body>
 </html>

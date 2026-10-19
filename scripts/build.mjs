@@ -72,10 +72,6 @@ const blocks = {};
 
 blocks.generatedNotice = "<!-- GENERATED FILE: edit templates/index.html or content/site.mjs, then run `node scripts/build.mjs`. -->";
 
-blocks.heroTitle = (biz.wordmarkLines?.length === 2 && biz.wordmarkLines.join("") === biz.name)
-  ? biz.wordmarkLines.map((l, i) => `<span class="hero__title-${i ? "b" : "a"}">${esc(l)}</span>`).join("")
-  : `<span class="hero__title-a">${esc(biz.name)}</span>`;
-
 // Break the tagline only after commas
 blocks.taglineHtml = biz.tagline.split(/(?<=,)\s+/).map((part) => `<span>${esc(part)}</span>`).join(" ");
 

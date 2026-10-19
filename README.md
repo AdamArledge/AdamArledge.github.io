@@ -9,6 +9,7 @@ scripts/build.mjs     writes index.html from the two files above (no dependencie
 index.html            GENERATED: what GitHub Pages serves. Don't edit it by hand.
 css/styles.css        all styles; design tokens at the top (:root)
 js/main.js            mobile menu and photo viewer
+js/wordmark.js        draws the hero wordmark as halftone dots
 images/               social preview image; Adam's photos go in images/work/ (see images/README.md)
 assets/svg/           favicon
 ```
@@ -66,20 +67,27 @@ What appears automatically once filled in:
 
 ## Design system
 
-**Direction:** editorial punk. Warm ivory paper, near-black ink, one cobalt accent, bold condensed display type and one recurring four-point sparkle. The hair photography should carry the visual interest.
+**Direction:** editorial punk. Warm cream paper, near-black ink, a burgundy halftone wordmark, one cobalt accent for actions, and bold condensed section headings. The hair photography should carry the visual interest.
 
-**Fonts** (Google Fonts): Anton for the wordmark and section headings, DM Sans for body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
+**Wordmark:** "AAhairartistry" as a printed halftone: a grid of round burgundy dots that swell and run together inside the letters (leaving small light holes) and shrink to specks at the edges. `js/wordmark.js` draws it into a canvas when the page loads, on one line on wide screens and stacked "AAhair / artistry" on narrow ones, redrawing sharply at any size. On each page load the dots start scattered around the wordmark and are drawn into place in about a second; the pieces are tiles cut from the finished wordmark, so they land pixel for pixel on it. It plays once (not on scroll or resize) and is skipped for visitors who've turned on "reduce motion". The wordmark's box is reserved by CSS from the first paint, so nothing on the page moves. The animation's timing is set by `STAGGER`, `MOVE_MIN`, `MOVE_MAX` and `SCATTER` in `js/wordmark.js`.
+
+The heading's text stays real for screen readers and search engines; without JavaScript the name shows as plain type in the same font (if the script fails to load, the type appears after 3 seconds). The header and footer use the plain type, since the dots need size to read.
+
+The letters are **SF Pro Rounded** (Heavy/Black) on iPhone, iPad and Mac, through the CSS `ui-rounded` font keyword. Apple's license doesn't allow SF Pro Rounded to be embedded on a website, so other devices (Android, Windows) get **Nunito**, a free rounded font, requested from Google Fonts for just the wordmark's letters. The dot size, density and texture are the constants at the top of `js/wordmark.js`; `CELLS_PER_CAP` is the main legibility control (fewer rows = bigger dots, harder to read).
+
+**Fonts** (Google Fonts): the rounded wordmark face above, Anton for section headings, DM Sans for navigation, body and interface text, Instrument Serif Italic as a sparing accent (tagline, Meet Adam intro, review quotes).
 
 **Tokens** live at the top of `css/styles.css`: color, type scale, spacing (8 / 16 / 24 / 32 / 48 / 64 / 96), one image radius (6px), one button radius (4px).
 
 | Pair | Ratio | Use |
 |---|---|---|
-| Ink `#171715` on ivory `#F2EFE8` | 15.6 | Body text, headings |
-| Muted `#5C5A54` on ivory / stone | 6.0 / 5.2 | Secondary text, fine print |
+| Ink `#171715` on cream `#F1EADF` | 15.0 | Body text, headings |
+| Burgundy `#4A1C24` on cream | 11.9 | The wordmark |
+| Muted `#5C5A54` on cream / stone | 5.8 / 5.1 | Secondary text, fine print |
 | White on cobalt `#3755EE` | 5.7 | Primary button labels |
-| Cobalt on ivory | 4.95 | Links, step numbers |
-| Cobalt on stone `#E4DFD3` | 4.3 ❌ | Not used as text; links on stone are ink with a cobalt underline |
-| Ivory on ink | 15.6 | Visit section text |
+| Cobalt on cream | 4.75 | Links, step numbers |
+| Cobalt on stone `#E6DDCE` | 4.2 ❌ | Not used as text; links on stone are ink with a cobalt underline |
+| Cream on ink | 15.0 | Visit section text |
 | `#9DADFF` on ink | 8.4 | Links and focus rings on the dark section |
 | Cobalt against ink | 3.2 | Button edge on dark (meets 3:1 for controls) |
 
