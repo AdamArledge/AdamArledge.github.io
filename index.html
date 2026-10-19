@@ -33,9 +33,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&text=AAhairartistry&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
-  <!-- Lets the CSS reserve the hero wordmark's box and hide its plain-type
-       fallback until js/wordmark.js draws it (the type returns after 3s if it never does) -->
-  <script>document.documentElement.classList.add("halftone");</script>
+  <!-- Set before the first paint, so nothing moves when the scripts run:
+       "js" lays out the header with the Menu button (js/main.js makes it work),
+       "halftone" reserves the hero wordmark's box and hides its plain-type
+       fallback until js/wordmark.js draws it (the type returns after 3s if it
+       never does). If main.js hasn't run by the time the page has loaded, the
+       header goes back to its plain list of links. -->
+  <script>
+    (function (root) {
+      root.classList.add("js", "halftone");
+      window.addEventListener("load", function () {
+        if (!root.hasAttribute("data-menu")) root.classList.remove("js");
+      });
+    })(document.documentElement);
+  </script>
 
   <!-- Business details for search engines, generated from content/site.mjs -->
   <script type="application/ld+json">

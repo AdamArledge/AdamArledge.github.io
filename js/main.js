@@ -3,7 +3,8 @@
 (function () {
   "use strict";
 
-  document.documentElement.classList.add("js");
+  // The <head> sets the "js" class; this tells it the menu is working
+  document.documentElement.setAttribute("data-menu", "ready");
 
   // ---------- Mobile menu ----------
   var toggle = document.querySelector(".nav__toggle");
