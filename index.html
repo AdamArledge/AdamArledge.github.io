@@ -180,6 +180,15 @@
 
           </div>
           <p class="fine-print">Booking opens Vagaro in a new tab.</p>
+          <!-- Decoration: a dahlia drawn in digits blooms once when it scrolls
+               into view (js/bloom.js loads the video only then). Without
+               JavaScript, or with "reduce motion", it shows in full bloom. -->
+          <div class="bloom" aria-hidden="true">
+            <video class="bloom__video" muted playsinline preload="none" poster="images/bloom/dahlia-last.webp" data-start-poster="images/bloom/dahlia-first.webp" width="432" height="492">
+              <source data-src="images/bloom/dahlia.webm" type="video/webm">
+              <source data-src="images/bloom/dahlia.mp4" type="video/mp4">
+            </video>
+          </div>
         </div>
 
         <div class="services__list">
@@ -299,5 +308,6 @@
   <script src="js/main.js" defer></script>
   <script src="js/wordmark.js" defer></script>
   <script src="js/ink.js" defer></script>
+  <script src="js/bloom.js" defer></script>
 </body>
 </html>

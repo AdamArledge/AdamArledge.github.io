@@ -503,9 +503,24 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 .work-item__caption { font-size: var(--text-sm); color: var(--ink-muted); }
 
 /* ---------- Services ---------- */
+.services { position: relative; }
 .services__layout { display: grid; gap: var(--s5); }
 .services__intro { display: grid; gap: var(--s3); align-content: start; }
 .services__lede { font-size: var(--text-lg); max-width: 34ch; }
+/* The dahlia (decoration): grey digits on the page's cream, which is baked
+   into the video and stills so they sit seamlessly on the background
+   (a blend mode can't, inside the sticky column). Phones and tablets: small
+   and light, in the space beside the heading. */
+.bloom {
+  position: absolute;
+  top: var(--s4);
+  right: var(--gutter);
+  width: clamp(6.5rem, 26vw, 11rem);
+  opacity: 0.45;
+  pointer-events: none;
+}
+.bloom__video { display: block; width: 100%; height: auto; }
+.services__intro > :not(.bloom), .services__list { position: relative; z-index: 1; }
 
 .service-group + .service-group { margin-top: var(--s5); }
 .service-group__title {
@@ -542,6 +557,9 @@ html:not(.js) .site-header__bar { flex-wrap: wrap; }
 @media (min-width: 56.25em) {
   .services__layout { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--s6); }
   .services__intro { position: sticky; top: calc(var(--header-h) + var(--s4)); }
+  /* In the sticky column under the booking note, so it travels beside the
+     list and never sits behind text */
+  .bloom { position: static; width: min(100%, 17rem); margin-top: var(--s2); opacity: 0.7; }
   .service__book { grid-column: auto; justify-self: end; }
 }
 
