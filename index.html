@@ -33,6 +33,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@800;900&text=AAhairartistry&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/styles.css">
+  <!-- Lets the CSS reserve the hero wordmark's box and hide its plain-type
+       fallback until js/wordmark.js draws it (the type returns after 3s if it never does) -->
+  <script>document.documentElement.classList.add("halftone");</script>
 
   <!-- Business details for search engines, generated from content/site.mjs -->
   <script type="application/ld+json">
@@ -111,11 +114,12 @@
       <div class="container hero__inner">
         <p class="hero__place"><span>Camden, SC</span><span class="hero__dot" aria-hidden="true">&middot;</span><span>Inside Ideation Spa</span></p>
 
-        <!-- js/wordmark.js draws the name as halftone dots, on one line or as
-             the two lines in data-halftone; without JavaScript it shows as type -->
+        <!-- js/wordmark.js draws the name as halftone dots in .hero__art, on one
+             line or as the two lines in data-halftone; without JavaScript it shows as type -->
         <h1 class="hero__title" id="hero-title" data-halftone="AAhair|artistry">
           <span class="visually-hidden">AAHairArtistry</span>
           <span class="hero__name" aria-hidden="true">AAhair<wbr>artistry</span>
+          <span class="hero__art" aria-hidden="true"></span>
         </h1>
 
         <div class="hero__body">
